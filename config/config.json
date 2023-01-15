@@ -1,0 +1,22 @@
+{
+  "development": {
+    "username": "salon",
+    "password": "salon@2021",
+    "database": "logistics.db",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "loadboard_user",
+    "password": "D6wjRQ5mnHhAbiEwR9pvm6UaWNm8BQDR",
+    "database": "loadboard_db",
+    "host": "postgres://loadboard_user:D6wjRQ5mnHhAbiEwR9pvm6UaWNm8BQDR@dpg-ces6nu1a6gdggmjfhrt0-a/loadboard_db",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}
