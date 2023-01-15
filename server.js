@@ -53,10 +53,10 @@ const UserSubscription = db.usersubscription;
 // app.use(passport.session());
 // simple route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Loadboard Logistics api.' });
+  res.json({ message: 'Welcome to TowTruckMove api.' });
 });
 app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to Loadboard Logistics api.' });
+  res.json({ message: 'Welcome to TowTruckMove api.' });
 });
 app.use(express.static('uploads'));
 app.use('/uploads', express.static('uploads'));
