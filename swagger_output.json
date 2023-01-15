@@ -2,13 +2,13 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
+    "title": "TowTruckMove REST API",
     "description": ""
   },
-  "host": "localhost:8000",
+  "host": "towtruckmove-api.onrender.com",
   "basePath": "/",
   "tags": [],
-  "schemes": ["http"],
+  "schemes": ["https"],
   "consumes": [],
   "produces": [],
   "paths": {
