@@ -10,7 +10,7 @@
     "username": "loadboard_user",
     "password": "D6wjRQ5mnHhAbiEwR9pvm6UaWNm8BQDR",
     "database": "loadboard_db",
-    "host": "postgres://loadboard_user:D6wjRQ5mnHhAbiEwR9pvm6UaWNm8BQDR@dpg-ces6nu1a6gdggmjfhrt0-a/loadboard_db",
+    "host": "dpg-ces6nu1a6gdggmjfhrt0-a",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
