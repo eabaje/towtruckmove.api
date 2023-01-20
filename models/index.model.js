@@ -38,7 +38,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.carrier = require('./carrier.model.js')(sequelize, Sequelize);
+db.park = require('./park.model.js')(sequelize, Sequelize);
 db.company = require('./company.model.js')(sequelize, Sequelize);
 db.companydoc = require('./company.doc.model.js')(sequelize, Sequelize);
 db.driver = require('./driver.model.js')(sequelize, Sequelize);
@@ -112,11 +112,14 @@ db.trip.belongsTo(db.driver, { foreignKey: 'DriverId' });
 // db.driver.hasMany(db.vehicle, { foreignKey: { name: 'VehicleId' } });
 // db.vehicle.belongsTo(db.driver , { foreignKey: { name: 'DriverId' } });
 
-db.company.hasMany(db.carrier, { foreignKey: 'CompanyId' });
-db.carrier.belongsTo(db.company, { foreignKey: 'CompanyId' });
+db.company.hasMany(db.park, { foreignKey: 'CompanyId' });
+db.park.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
-db.carrier.hasMany(db.vehicle, { foreignKey: 'CarrierId' });
-db.vehicle.belongsTo(db.carrier, { foreignKey: 'CarrierId' });
+db.park.hasMany(db.vehicle, { foreignKey: 'ParkId' });
+db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
+
+db.park.hasMany(db.vehicle, { foreignKey: 'ParkId' });
+db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
 
 db.company.hasMany(db.vehicle, { foreignKey: 'CompanyId' });
 db.vehicle.belongsTo(db.company, { foreignKey: 'CompanyId' });
@@ -220,6 +223,6 @@ db.shipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
 //db.shipment.belongsTo(db.interested, {foreignKey: 'UserId'});
 
-db.ROLES = ['shipper', 'admin', 'auditor', 'driver', 'carrier', 'broker'];
+db.ROLES = ['shipper', 'admin', 'auditor', 'driver', 'park', 'broker'];
 
 module.exports = db;

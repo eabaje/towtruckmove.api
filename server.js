@@ -66,7 +66,8 @@ app.use('/docs', express.static('docs'));
 // routes
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
-require('./routes/carrier.routes')(app);
+//require('./routes/carrier.routes')(app);
+require('./routes/park.routes')(app);
 require('./routes/driver.routes')(app);
 require('./routes/vehicle.routes')(app);
 require('./routes/shipment.routes')(app);
