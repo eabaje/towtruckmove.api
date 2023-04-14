@@ -43,6 +43,7 @@ db.company = require('./company.model.js')(sequelize, Sequelize);
 db.companydoc = require('./company.doc.model.js')(sequelize, Sequelize);
 db.driver = require('./driver.model.js')(sequelize, Sequelize);
 db.vehicle = require('./vehicle.model.js')(sequelize, Sequelize);
+db.vehicletowed = require('./vehicle.towed.model.js')(sequelize, Sequelize);
 db.user = require('./user.model.js')(sequelize, Sequelize);
 db.role = require('./role.model.js')(sequelize, Sequelize);
 db.userrole = require('./user.role.model.js')(sequelize, Sequelize);
@@ -120,6 +121,9 @@ db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
 
 db.park.hasMany(db.vehicle, { foreignKey: 'ParkId' });
 db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
+
+db.park.hasMany(db.vehicletowed, { foreignKey: 'ParkId' });
+db.vehicletowed.belongsTo(db.park, { foreignKey: 'ParkId' });
 
 db.company.hasMany(db.vehicle, { foreignKey: 'CompanyId' });
 db.vehicle.belongsTo(db.company, { foreignKey: 'CompanyId' });

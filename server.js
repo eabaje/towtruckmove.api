@@ -171,8 +171,8 @@ function initial() {
 
   Company.create({
     //  CompanyId: 1,
-    CompanyName: 'Global Load Dispatch',
-    ContactEmail: 'admin@loaddispatch.com.ng',
+    CompanyName: 'Tow Truck Move',
+    ContactEmail: 'admin@towtruckmove.com.ng',
     ContactPhone: '08057886381',
     CompanyType: 'admin',
     Address: 'Lagos',
@@ -211,9 +211,9 @@ function initial() {
   User.create({
     UserId: initialUserId,
     FullName: 'Gabriel Ehima',
-    Email: 'admin@loaddispatch.com.ng',
+    Email: 'admin@towtruckmove.com.ng',
     Phone: '08057886381',
-    UserName: 'admin@loaddispatch.com.ng',
+    UserName: 'admin@towtruckmove.com.ng',
     Password: encryptedPassword,
     Address: 'Lagos',
     City: 'LG',

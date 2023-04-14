@@ -7,10 +7,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "loadboard_user",
-    "password": "D6wjRQ5mnHhAbiEwR9pvm6UaWNm8BQDR",
-    "database": "loadboard_db",
-    "host": "dpg-ces6nu1a6gdggmjfhrt0-a",
+    "username": "trucktowmove_db_user",
+    "password": "ToGP6pF96EvXVE1jcF8K9Xoc2104tXbb",
+    "database": "trucktowmove_db",
+    "host": "dpg-cgqmtat269v32oa0a6i0-a",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
