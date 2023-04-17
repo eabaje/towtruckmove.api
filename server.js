@@ -32,10 +32,10 @@ const Subscription = db.subscribe;
 const UserSubscription = db.usersubscription;
 //db.sequelize.sync();
 //force: true will drop the table if it already exists
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log('Drop and Resync Database with { force: true }');
-//   initial();
-// });
+db.sequelize.sync({ force: true }).then(() => {
+  console.log('Drop and Resync Database with { force: true }');
+  initial();
+});
 
 // db.sequelize.sync({ alter: true }).then(() => {
 //   console.log('Drop and Resync Database with { force: true }');
@@ -156,7 +156,7 @@ function initial() {
   const { v1: uuidv1, v4: uuidv4 } = require('uuid');
   encryptedPassword = bcrypt.hashSync('Web@2022', 8);
   initialUserId = uuidv4();
-  shipperRoleId = uuidv4();
+  customerRoleId = uuidv4();
   carrierRoleId = uuidv4();
   adminRoleId = uuidv4();
   auditorRoleId = uuidv4();
@@ -181,8 +181,8 @@ function initial() {
   });
 
   Role.create({
-    RoleId: shipperRoleId,
-    Name: 'shipper',
+    RoleId: customerRoleId,
+    Name: 'customer',
   });
 
   Role.create({
