@@ -129,6 +129,63 @@ exports.findAllCarriersByCompany = (req, res) => {
       });
     });
 };
+
+
+exports.findCarrierByLocation = (req, res) => {
+  const givenLatitude = req.params.givenLatitude;
+  const givenLongitude = req.params.givenLongitude;
+  
+  const id = req.params.companyId;
+  CarrierType.findAll({
+    attributes: [
+      "CarrierId",
+      "longitude",
+      "latitude",
+      [
+        sequelize.literal(`
+          6371 *
+          2 *
+          ASIN(
+            SQRT(
+              POWER(SIN(RADIANS((${givenLatitude} - latitude) / 2)), 2) +
+              COS(RADIANS(latitude)) * COS(RADIANS(${givenLatitude})) *
+              POWER(SIN(RADIANS((${givenLongitude} - longitude) / 2)), 2)
+            )
+          )
+        `),
+        "distance",
+      ],
+    ],
+    where: sequelize.where(
+      sequelize.literal(`
+        6371 *
+        2 *
+        ASIN(
+          SQRT(
+            POWER(SIN(RADIANS((${givenLatitude} - latitude) / 2)), 2) +
+            COS(RADIANS(latitude)) * COS(RADIANS(${givenLatitude})) *
+            POWER(SIN(RADIANS((${givenLongitude} - longitude) / 2)), 2)
+          )
+        )
+      `),
+      "<=",
+      maxDistance
+    ),
+    order: sequelize.literal("distance ASC"),
+  })
+    .then((result) => {
+      // Process the filtered data
+      console.log(result);
+
+      res.status(200).send({
+        message: 'Success',
+        data: result,
+      });
+    })
+    .catch((error) => {
+      console.error("Error retrieving data:", error);
+    });
+  }  
 // Update a Carrier by the id in the request
 exports.update = (req, res) => {
   const id = req.params.carrierId;
