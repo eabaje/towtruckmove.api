@@ -201,13 +201,13 @@
         "responses": {}
       }
     },
-    "/api/carrier/findOne/{carrierId}": {
+    "/api/park/findOne/{parkId}": {
       "get": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "carrierId",
+            "name": "parkId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -223,7 +223,7 @@
         }
       }
     },
-    "/api/carrier/findAll": {
+    "/api/park/findAll": {
       "get": {
         "tags": [],
         "description": "",
@@ -238,7 +238,7 @@
         }
       }
     },
-    "/api/carrier/findAllCarriersByCompany/{companyId}": {
+    "/api/park/findAllparksByCompany/{companyId}": {
       "get": {
         "tags": [],
         "description": "",
@@ -260,7 +260,7 @@
         }
       }
     },
-    "/api/carrier/findAllCarriersLicensed": {
+    "/api/park/findAllparksLicensed": {
       "get": {
         "tags": [],
         "description": "",
@@ -275,7 +275,7 @@
         }
       }
     },
-    "/api/carrier/findAllCarriersByDate/{startDate}/{endDate}": {
+    "/api/park/findAllparksByDate/{startDate}/{endDate}": {
       "get": {
         "tags": [],
         "description": "",
@@ -303,7 +303,7 @@
         }
       }
     },
-    "/api/carrier/create": {
+    "/api/park/create": {
       "post": {
         "tags": [],
         "description": "",
@@ -314,7 +314,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "CarrierType": {
+                "ParkType": {
                   "example": "any"
                 },
                 "FleetType": {
@@ -352,13 +352,13 @@
         }
       }
     },
-    "/api/carrier/update/{carrierId}": {
+    "/api/park/update/{parkId}": {
       "put": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "carrierId",
+            "name": "parkId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -374,13 +374,13 @@
         }
       }
     },
-    "/api/carrier/delete/{carrierId}": {
+    "/api/park/delete/{parkId}": {
       "delete": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "carrierId",
+            "name": "parkId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -396,7 +396,7 @@
         }
       }
     },
-    "/api/carrier/deleteAll": {
+    "/api/park/deleteAll": {
       "delete": {
         "tags": [],
         "description": "",
@@ -1261,7 +1261,59 @@
         }
       }
     },
+    "/api/shipment/findAll/{userId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/shipment/findAll": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/findAllAssignShipment": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/findAllAssignDriverShipment": {
       "get": {
         "tags": [],
         "description": "",
@@ -1475,28 +1527,16 @@
         }
       }
     },
-    "/api/shipment/showInterest": {
-      "post": {
+    "/api/shipment/findAssignDriverShipment/{shipmentId}": {
+      "get": {
         "tags": [],
         "description": "",
         "parameters": [
           {
-            "name": "obj",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "CompanyId": {
-                  "example": "any"
-                },
-                "UserId": {
-                  "example": "any"
-                },
-                "ShipmentId": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "shipmentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -1561,6 +1601,315 @@
                   "example": "any"
                 },
                 "DriverId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/showInterest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/dispatchShipment": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/pickedUpShipment": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/deliveredShipment": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/cancelShipment": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/archiveShipment": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/sendRemindEmail": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/contractSigned": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "ShipmentId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/shipment/contractAccepted": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
                   "example": "any"
                 },
                 "ShipmentId": {
@@ -1670,6 +2019,9 @@
                   "example": "any"
                 },
                 "ShipmentStatus": {
+                  "example": "any"
+                },
+                "vehicle": {
                   "example": "any"
                 }
               }
@@ -2804,6 +3156,37 @@
         }
       }
     },
+    "/api/user/uploadCompanyDoc": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "RefId": {
+                  "example": "any"
+                },
+                "DocTitle": {
+                  "example": "any"
+                },
+                "DocType": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/user/delete": {
       "post": {
         "tags": [],
@@ -3262,10 +3645,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "UserId": {
+                "RefId": {
                   "example": "any"
                 },
-                "FileType": {
+                "DocTitle": {
+                  "example": "any"
+                },
+                "DocType": {
                   "example": "any"
                 }
               }
@@ -3273,8 +3659,39 @@
           }
         ],
         "responses": {
-          "500": {
-            "description": "Internal Server Error"
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "\r/api/user/company/updateCompanyDoc": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "RefId": {
+                  "example": "any"
+                },
+                "DocTitle": {
+                  "example": "any"
+                },
+                "DocType": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3309,6 +3726,50 @@
           {
             "name": "companyType",
             "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/findAllCompanyDoc/{companyId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/findCompanyDocById/{docId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "docId",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],

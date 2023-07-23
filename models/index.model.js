@@ -227,6 +227,6 @@ db.shipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
 //db.shipment.belongsTo(db.interested, {foreignKey: 'UserId'});
 
-db.ROLES = ['shipper', 'admin', 'auditor', 'driver', 'park', 'broker'];
+db.ROLES = ['customer', 'admin', 'auditor', 'driver', 'park','sysadmin'];
 
 module.exports = db;
