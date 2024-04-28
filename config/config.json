@@ -9,7 +9,7 @@
   "production": {
     "username": "trucktowmove_db_g6l5_user",
     "password": "cr6uLJc6nCi0gyNcpf4nfnM3UWfSMSG8",
-    "database": "trucktowmove_db",
+    "database": "trucktowmove_db_g6l5",
     "host": "dpg-con8gtq1hbls73fej16g-a.oregon-postgres.render.com",
     "dialect": "postgres",
     "dialectOptions": {
