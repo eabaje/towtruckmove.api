@@ -5,7 +5,7 @@
     "title": "TowTruckMove REST API",
     "description": ""
   },
-  "host": "towtruckmove-api.onrender.com",
+  "host": "https://towtruckmove-api.onrender.com",
   "host1": "localhost:8000",
   "tags": [],
   "schemes": [
