@@ -10,7 +10,7 @@
     "username": "trucktowmove_db_g6l5_user",
     "password": "cr6uLJc6nCi0gyNcpf4nfnM3UWfSMSG8",
     "database": "trucktowmove_db",
-    "host": "dpg-con8gtq1hbls73fej16g-a",
+    "host": "dpg-con8gtq1hbls73fej16g-a.oregon-postgres.render.com",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
