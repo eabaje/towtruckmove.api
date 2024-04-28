@@ -1,11 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-  const towRequest = sequelize.define('Towrequest', {
-    TowrequestId: {
+  const TowRequest = sequelize.define('TowRequest', {
+    TowRequestId: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV1,
     },
     // CarrierId: { type: DataTypes.STRING },
+   
     VehicleType: { type: DataTypes.STRING, default: null },
     VehicleNumber: { type: DataTypes.STRING },
     SerialNumber: { type: DataTypes.STRING },
@@ -21,7 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     latitude: { type: DataTypes.STRING },
     IncidentLocation: { type: DataTypes.STRING },
     Destination: { type: DataTypes.STRING },
-    TowStatus: { type: DataTypes.STRING },
+    TowRequestPrice: { type: DataTypes.STRING },
+    TowRequestDate: { type: DataTypes.DATE },
+    TowRequestStatus: { type: DataTypes.STRING },
     IsApproved: { type: DataTypes.BOOLEAN },
     Comment: { type: DataTypes.STRING },
     createdAt: { type: DataTypes.DATE },
@@ -35,5 +38,5 @@ module.exports = (sequelize, DataTypes) => {
     // },
   });
 
-  return Vehicle;
+  return TowRequest;
 };

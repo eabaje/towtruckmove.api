@@ -327,6 +327,39 @@ exports.findAllDriversByVehicle = (req, res) => {
     });
 };
 
+exports.findAllDriversByPark = (req, res) => {
+  const parkId = req.params.parkId;
+
+  Driver.findAll({
+    where: { ParkId: parkId },
+
+    include: [
+      {
+        model: Company,
+        attributes: ['CompanyName'],
+      },
+      {
+        model: User,
+        attributes: ['FullName'],
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+  })
+
+    .then((data) => {
+      res.status(200).send({
+        message: 'Success',
+        data: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving Drivers.',
+      });
+    });
+};
+
+
 exports.findAllDriversByCompany = (req, res) => {
   const companyId = req.params.companyId;
 

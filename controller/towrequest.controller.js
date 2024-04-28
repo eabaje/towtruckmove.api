@@ -1,21 +1,21 @@
 const db = require('../models/index.model');
 const { mailFunc } = require('../middleware');
 const { TRIP_STATUS, ROLES, TRACK_SHIPMENT_STATUS } = require('../enum');
-const Shipment = db.shipment;
-const ShipmentDetail = db.shipmentdetail;
-const ShipmentInterested = db.interested;
+const TowRequest = db.towrequest;
+const TowRequestDetail = db.towRequestdetail;
+const TowRequestInterested = db.interestedtowrequest;
 const User = db.user;
 const Driver = db.driver;
 const Company = db.company;
 const Interested = db.interested;
-const AssignDriverShipment = db.assigndrivershipment;
-const AssignShipment = db.assignshipment;
-const TrackShipment = db.trackshipment;
-//AssignDriverShipment
+const AssignDriverTowRequest = db.assigndrivertowrequest;
+const AssignTowRequest = db.assigntowrequest;
+const TrackTowRequest = db.tracktowrequest;
+//AssignDriverTowRequest
 
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Shipment
+// Create and Save a new TowRequest
 exports.create = async (req, res) => {
   // Validate request
   // if (!req.body.title) {
@@ -26,117 +26,89 @@ exports.create = async (req, res) => {
   // }
 
   try {
-    // Create a Shipment
-    const shipment = {
-      CompanyId: req.body.CompanyId,
+    // Create a TowRequest
+   
+
+    const towrequest = {
+      VehicleType: req.body.VehicleType,
       UserId: req.body.UserId,
-      LoadCategory: req.body.LoadCategory,
-      LoadType: req.body.LoadType,
-      LoadWeight: req.body.LoadWeight ? req.body.LoadWeight : 0,
-      LoadUnit: req.body.LoadUnit,
-      Qty: req.body.Qty ? req.body.Qty : 0,
+      VehicleNumber: req.body.VehicleNumber,
+      SerialNumber: req.body.SerialNumber,
+      VehicleMake: req.body.VehicleMake ,
+      VehicleColor: req.body.VehicleColor,
+      LicensePlate: req.body.LicensePlate ,
+      VehicleModel: req.body.VehicleModel,
+      VehicleModelYear: req.body.VehicleModelYear,
+
+      PicUrl: req.body.PicUrl,
       Description: req.body.Description,
-      PickUpLocation: req.body.PickUpLocation,
-      DeliveryLocation: req.body.DeliveryLocation,
-      PickUpCountry: req.body.PickUpCountry,
-      PickUpRegion: req.body.PickUpRegion,
-      PickUpCity: req.body.PickUpCity,
+      longitude: req.body.longitude,
+      latitude: req.body.latitude,
+      IncidentLocation: req.body.IncidentLocation,
+      
+      IsApproved: req.body.IsApproved,
+      Comment: req.body.DeliveryCity,
 
-      PickUpLocation: req.body.PickUpLocation,
-      DeliveryCountry: req.body.DeliveryCountry,
-      DeliveryRegion: req.body.DeliveryRegion,
-      DeliveryCity: req.body.DeliveryCity,
+      Insured: req.body.Insured,
+      TowRequestPrice: req.body.TowRequestPrice,
 
-      DeliveryLocation: req.body.DeliveryLocation,
-
-      ExpectedPickUpDate: req.body.ExpectedPickUpDate,
-      ExpectedDeliveryDate: req.body.ExpectedDeliveryDate,
-
-      RequestForShipment: req.body.RequestForShipment,
-      ShipmentRequestPrice: req.body.ShipmentRequestPrice,
-
-      DeliveryContactName: req.body.DeliveryContactName,
-      DeliveryContactPhone: req.body.DeliveryContactPhone,
-
-      DeliveryEmail: req.body.DeliveryEmail,
-      AssignedShipment: req.body.AssignedShipment,
-
-      ShipmentRequestPrice: req.body.ShipmentRequestPrice,
-
-      ShipmentDate: req.body.ShipmentDate,
-      ShipmentDocs: req.body.ShipmentDocs,
-      ShipmentStatus: req.body.ShipmentStatus,
+      TowRequestDate: req.body.TowRequestDate,
+      TowRequestDocs: req.body.TowRequestDocs,
+      TowRequestStatus: req.body.TowRequestStatus,
+      ParkId: req.body.ParkId,
+      AssignedDriverId: req.body.AssignedDriverId,
     };
     console.log('request.body', req.body);
-    // Save Shipment in the database
+    // Save TowRequest in the database
 
-    const newShipment = await Shipment.create(shipment);
+    const newTowRequest = await TowRequest.create(towrequest);
 
-    if (newShipment) {
-      const shipmentDetailArrayLength = req.body.vehicle.length;
-
-      if (shipmentDetailArrayLength <= 0) {
-      }
-
-      await req.body.vehicle.map((vehicle, index) => {
-        const shipmentDetail = {
-          ShipmentId: newShipment.ShipmentId,
-          VehicleType: vehicle.VehicleType,
-          VIN: vehicle.VIN,
-          VehicleMake: vehicle.VehicleMake,
-          VehicleColor: vehicle.VehicleColor,
-          VehicleModel: vehicle.VehicleModel,
-
-          VehicleModelYear: vehicle.VehicleModelYear,
-          // PurchaseYear: vehicle.VehicleType,
-        };
-
-        const newShipmentDetails = ShipmentDetail.create(shipmentDetail);
-      });
+    if (newTowRequest) {
+     
 
       return res.status(200).send({
-        message: 'Shipment was added successfully',
-        data: newShipment,
+        message: 'TowRequest was added successfully',
+        data: newTowRequest,
       });
     }
   } catch (error) {
     console.log('error:', error.message);
     return res.status(500).send({
-      message: error.message || 'Some error occurred while creating the Shipment.',
+      message: error.message || 'Some error occurred while creating the TowRequest.',
     });
   }
 };
 
-// Retrieve all Shipments start the database.
+// Retrieve all TowRequests start the database.
 exports.findAll = (req, res) => {
   const UserId = req.params.userId;
   // const id = req.params.companyId;
   var condition = UserId ? { UserId: UserId } : null;
 
-  Shipment.findAll({
+  TowRequest.findAll({
     where: condition,
 
     include: [
-      {
-        model: ShipmentDetail,
-      },
+      // {
+      //   model: TowRequestDetail,
+      // },
 
       {
         model: Company,
         attributes: ['CompanyName'],
       },
       {
-        model: AssignDriverShipment,
+        model: AssignDriverTowRequest,
       },
       {
-        model: AssignShipment,
+        model: AssignTowRequest,
       },
       {
-        model: ShipmentInterested,
+        model: TowRequestInterested,
       },
 
       {
-        model: TrackShipment,
+        model: TrackTowRequest,
       },
 
       {
@@ -154,17 +126,17 @@ exports.findAll = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-// Find a single Shipment with an id
+// Find a single TowRequest with an id
 exports.findOne = (req, res) => {
-  const id = req.params.shipmentId;
+  const id = req.params.towRequestId;
 
-  Shipment.findOne({
-    where: { ShipmentId: id },
+  TowRequest.findOne({
+    where: { TowRequestId: id },
 
     include: [
       {
@@ -176,17 +148,17 @@ exports.findOne = (req, res) => {
         attributes: ['CompanyName'],
       },
       {
-        model: AssignDriverShipment,
+        model: AssignDriverTowRequest,
       },
       {
-        model: AssignShipment,
+        model: AssignTowRequest,
       },
       {
-        model: ShipmentInterested,
+        model: TowRequestInterested,
       },
-      {
-        model: ShipmentDetail,
-      },
+      // {
+      //   model: TowRequestDetail,
+      // },
     ],
   })
     .then((data) => {
@@ -197,7 +169,7 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving Shipment with ShipmentId=' + id,
+        message: 'Error retrieving TowRequest with TowRequestId=' + id,
       });
     });
 };
@@ -206,21 +178,21 @@ exports.findOne = (req, res) => {
 
 
 
-// Update a Shipment by the id in the request
+// Update a TowRequest by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.shipmentId;
+  const id = req.params.towRequestId;
 
-  Shipment.update(req.body, {
-    where: { ShipmentId: id },
+  TowRequest.update(req.body, {
+    where: { TowRequestId: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Shipment was updated successfully.',
+          message: 'TowRequest was updated successfully.',
         });
       } else {
         res.send({
-          message: `Cannot update Shipment with id=${id}. Maybe Shipment was not found or req.body is empty!`,
+          message: `Cannot update TowRequest with id=${id}. Maybe TowRequest was not found or req.body is empty!`,
         });
       }
     })
@@ -228,69 +200,69 @@ exports.update = (req, res) => {
       console.log('id', id);
       console.log('err', err);
       res.status(500).send({
-        message: 'Error updating Shipment with id=' + id,
+        message: 'Error updating TowRequest with id=' + id,
       });
     });
 };
 
-// Delete a Shipment with the specified id in the request
+// Delete a TowRequest with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.ShipmentId;
+  const id = req.params.TowRequestId;
 
-  Shipment.destroy({
-    where: { ShipmentId: id },
+  TowRequest.destroy({
+    where: { TowRequestId: id },
   })
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: 'Shipment was deleted successfully!',
+          message: 'TowRequest was deleted successfully!',
         });
       } else {
         res.send({
-          message: `Cannot delete Shipment with id=${id}. Maybe Shipment was not found!`,
+          message: `Cannot delete TowRequest with id=${id}. Maybe TowRequest was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Could not delete Shipment with id=' + id,
+        message: 'Could not delete TowRequest with id=' + id,
       });
     });
 };
 
-// Delete all Shipments start the database.
+// Delete all TowRequests start the database.
 exports.deleteAll = (req, res) => {
-  Shipment.destroy({
+  TowRequest.destroy({
     where: {},
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Shipments were deleted successfully!` });
+      res.send({ message: `${nums} TowRequests were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while removing all Shipments.',
+        message: err.message || 'Some error occurred while removing all TowRequests.',
       });
     });
 };
 
-// find all insured Shipment
-exports.findAllShipmentsByStatus = (req, res) => {
-  const status = req.params.shipmentStatus;
-  const shipmentId = req.params.shipmentId;
-  var condition = shipmentId
-    ? { [Op.and]: [{ ShipmentId: shipmentId }, { ShipmentStatus: status }] }
-    : { ShipmentStatus: status };
+// find all insured TowRequest
+exports.findAllTowRequestsByStatus = (req, res) => {
+  const status = req.params.towRequestStatus;
+  const towRequestId = req.params.towRequestId;
+  var condition = towRequestId
+    ? { [Op.and]: [{ TowRequestId: towRequestId }, { TowRequestStatus: status }] }
+    : { TowRequestStatus: status };
 
-  Shipment.findAll({
+  TowRequest.findAll({
     where: {
       condition,
     },
-    include: [
-      {
-        model: ShipmentDetail,
-      },
-    ],
+    // include: [
+    //   {
+    //     model: TowRequestDetail,
+    //   },
+    // ],
   })
 
     .then((data) => {
@@ -301,29 +273,29 @@ exports.findAllShipmentsByStatus = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllShipmentsAssigned = (req, res) => {
-  const status = req.params.shipmentStatus;
-  const assignedshipment = req.params.assignedshipment;
-  const shipmentId = req.params.shipmentId;
-  var condition = shipmentId
-    ? { [Op.and]: [{ ShipmentId: shipmentId }, { AssignedShipment: assignedshipment }] }
-    : { ShipmentStatus: status };
+exports.findAllTowRequestsAssigned = (req, res) => {
+  const status = req.params.towRequestStatus;
+  const assignedtowRequest = req.params.assignedtowRequest;
+  const towRequestId = req.params.towRequestId;
+  var condition = towRequestId
+    ? { [Op.and]: [{ TowRequestId: towRequestId }, { AssignedTowRequest: assignedtowRequest }] }
+    : { TowRequestStatus: status };
 
-  // Shipment.findAll({ where: condition },
-  Shipment.findAll({
+  // TowRequest.findAll({ where: condition },
+  TowRequest.findAll({
     where: {
       condition,
     },
-    include: [
-      {
-        model: ShipmentDetail,
-      },
-    ],
+    // include: [
+    //   {
+    //     model: TowRequestDetail,
+    //   },
+    // ],
   })
     .then((data) => {
       res.status(200).send({
@@ -333,27 +305,27 @@ exports.findAllShipmentsAssigned = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-// find all  Shipment by date
-exports.findAllShipmentsByDeliveryDate = (req, res) => {
+// find all  TowRequest by date
+exports.findAllTowRequestsByDeliveryDate = (req, res) => {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
-  Shipment.findAll({
+  TowRequest.findAll({
     where: {
       DeliveryDate: {
         [Op.between]: [new Date(Date(startDate)), new Date(Date(endDate))],
       },
     },
-    include: [
-      {
-        model: ShipmentDetail,
-      },
-    ],
+    // include: [
+    //   {
+    //     model: TowRequestDetail,
+    //   },
+    // ],
     order: [['createdAt', 'DESC']],
   })
 
@@ -365,26 +337,26 @@ exports.findAllShipmentsByDeliveryDate = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllShipmentsByPickUpDate = (req, res) => {
+exports.findAllTowRequestsByPickUpDate = (req, res) => {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
-  Shipment.findAll({
+  TowRequest.findAll({
     where: {
       PickUpDate: {
         [Op.between]: [new Date(Date(startDate)), new Date(Date(endDate))],
       },
     },
-    include: [
-      {
-        model: ShipmentDetail,
-      },
-    ],
+    // include: [
+    //   {
+    //     model: TowRequestDetail,
+    //   },
+    // ],
     order: [['createdAt', 'DESC']],
   })
 
@@ -396,26 +368,26 @@ exports.findAllShipmentsByPickUpDate = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllShipmentsByRecordDate = (req, res) => {
+exports.findAllTowRequestsByDate = (req, res) => {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
-  Shipment.findAll({
+  TowRequest.findAll({
     where: {
       createdAt: {
         [Op.between]: [new Date(Date(startDate)), new Date(Date(endDate))],
       },
     },
-    include: [
-      {
-        model: ShipmentDetail,
-      },
-    ],
+    // include: [
+    //   {
+    //     model: TowRequestDetail,
+    //   },
+    // ],
     order: [['createdAt', 'DESC']],
   })
 
@@ -427,12 +399,12 @@ exports.findAllShipmentsByRecordDate = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-// Create and Save a new Shipment
+// Create and Save a new TowRequest
 exports.create1 = (req, res) => {
   // Validate request
   // if (!req.body.title) {
@@ -442,8 +414,8 @@ exports.create1 = (req, res) => {
   //   return;
   // }
 
-  // Create a Shipment
-  const shipment = {
+  // Create a TowRequest
+  const towRequest = {
     UserId: req.body.UserId,
     LoadCategory: req.body.LoadCategory,
     LoadType: req.body.LoadType,
@@ -463,29 +435,29 @@ exports.create1 = (req, res) => {
     DeliveryLocation: req.body.DeliveryLocation,
     ExpectedPickUpDate: req.body.ExpectedPickUpDate,
     ExpectedDeliveryDate: req.body.ExpectedDeliveryDate,
-    RequestForShipment: req.body.RequestForShipment,
-    ShipmentRequestPrice: req.body.ShipmentRequestPrice,
+    RequestForTowRequest: req.body.RequestForTowRequest,
+    TowRequestRequestPrice: req.body.TowRequestRequestPrice,
     DeliveryContactName: req.body.DeliveryContactName,
     DeliveryContactPhone: req.body.DeliveryContactPhone,
     DeliveryEmail: req.body.DeliveryEmail,
-    AssignedShipment: req.body.AssignedShipment,
-    ShipmentDate: req.body.ShipmentDate,
-    ShipmentDocs: req.body.ShipmentDocs,
-    ShipmentStatus: req.body.ShipmentStatus,
+    AssignedTowRequest: req.body.AssignedTowRequest,
+    TowRequestDate: req.body.TowRequestDate,
+    TowRequestDocs: req.body.TowRequestDocs,
+    TowRequestStatus: req.body.TowRequestStatus,
   };
 
-  // Save Shipment in the database
-  Shipment.create(shipment)
+  // Save TowRequest in the database
+  TowRequest.create(towRequest)
     .then((data) => {
       res.status(200).send({
-        message: 'Shipment was added successfully',
+        message: 'TowRequest was added successfully',
         data: data,
       });
     })
     .catch((err) => {
       console.log('error:', err.message);
       res.status(500).send({
-        message: err.message || 'Some error occurred while creating the Shipment.',
+        message: err.message || 'Some error occurred while creating the TowRequest.',
       });
     });
 };
@@ -493,19 +465,19 @@ exports.create1 = (req, res) => {
 exports.showInterest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
     const InterestedResult = await Interested.findOne({
-      where: { ShipmentId: ShipmentId, CompanyId: CompanyId, UserId: UserId },
+      where: { TowRequestId: TowRequestId, CompanyId: CompanyId, UserId: UserId },
     });
 
     const company = await Company.findOne({ where: { CompanyId: CompanyId } });
 
-    const shipmentUser = await Shipment.findOne({
-      where: { ShipmentId: req.body.ShipmentId },
+    const towRequestUser = await TowRequest.findOne({
+      where: { TowRequestId: req.body.TowRequestId },
       include: [
         {
           model: User,
@@ -517,18 +489,18 @@ exports.showInterest = async (req, res) => {
     if (InterestedResult === null) {
       // create new interest
       const newRecord = await Interested.create({
-        ShipmentId: ShipmentId,
+        TowRequestId: TowRequestId,
         UserId: UserId,
         CompanyId: CompanyId,
         IsInterested: true,
         InterestDate: new Date(),
       });
 
-      const trackShipment = await TrackShipment.create({
-        ShipmentId: ShipmentId,
+      const trackTowRequest = await TrackTowRequest.create({
+        TowRequestId: TowRequestId,
         UserId: UserId,
         CompanyId: CompanyId,
-        //  AssignShipmentId: IsAssignedShipment.AssignShipmentId ? IsAssignedShipment.AssignShipmentId : null,
+        //  AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId ? IsAssignedTowRequest.AssignTowRequestId : null,
         StartBy: UserId,
         StartByRole: ROLES.find((item) => item.value === 'carrier').value,
         StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Interested').value,
@@ -542,22 +514,22 @@ exports.showInterest = async (req, res) => {
 
       const url = process.env.ADMIN_URL + `/company/review-company-action/?companyId=${CompanyId}&readOnly=true`;
 
-      //Send mail to Shipment Owner
-      const msgShipment = `You have an interest from  ${interestedUser.FullName} for Load Boarding Services.Kindly click the button below to check  the profile`;
+      //Send mail to TowRequest Owner
+      const msgTowRequest = `You have an interest from  ${interestedUser.FullName} for Load Boarding Services.Kindly click the button below to check  the profile`;
 
       await mailFunc.sendEmail({
         template: 'interest',
         subject: 'Request for LoadBoarding Services',
-        toEmail: shipmentUser.User.Email,
+        toEmail: towRequestUser.User.Email,
         msg: {
-          name: shipmentUser.User.FullName,
-          msg: msgShipment,
+          name: towRequestUser.User.FullName,
+          msg: msgTowRequest,
           url: url,
         },
       });
 
       //Send Mail to interested carrier
-      const msgCarrier = `Your interest in shipment with ref:${req.body.ShipmentId} for Load Boarding Services has been sent.We wish you best luck going further in the process.`;
+      const msgCarrier = `Your interest in towRequest with ref:${req.body.TowRequestId} for Load Boarding Services has been sent.We wish you best luck going further in the process.`;
 
       await mailFunc.sendEmail({
         template: 'interest',
@@ -575,26 +547,26 @@ exports.showInterest = async (req, res) => {
         data: newRecord,
       });
     } else {
-      //Restore Interest in Shipment
+      //Restore Interest in TowRequest
       const IsInterestedResult = await Interested.findOne({
-        where: { ShipmentId: ShipmentId, CompanyId: CompanyId, UserId: UserId, IsInterested: false },
+        where: { TowRequestId: TowRequestId, CompanyId: CompanyId, UserId: UserId, IsInterested: false },
       });
 
-      const IsAssignedShipment = await AssignShipment.findOne({
-        where: { ShipmentId: ShipmentId, CompanyId: CompanyId },
+      const IsAssignedTowRequest = await AssignTowRequest.findOne({
+        where: { TowRequestId: TowRequestId, CompanyId: CompanyId },
       });
 
       if (IsInterestedResult) {
         const updatedInterestTrue = await Interested.update(
           { IsInterested: true },
-          { where: { ShipmentId: ShipmentId, UserId: UserId, CompanyId: CompanyId } },
+          { where: { TowRequestId: TowRequestId, UserId: UserId, CompanyId: CompanyId } },
         );
 
-        const trackShipment = await TrackShipment.create({
-          ShipmentId: ShipmentId,
+        const trackTowRequest = await TrackTowRequest.create({
+          TowRequestId: TowRequestId,
           UserId: UserId,
           CompanyId: CompanyId,
-          //  AssignShipmentId: IsAssignedShipment.AssignShipmentId ? IsAssignedShipment.AssignShipmentId : null,
+          //  AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId ? IsAssignedTowRequest.AssignTowRequestId : null,
           StartBy: UserId,
           StartByRole: ROLES.find((item) => item.value === 'carrier').value,
           StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'RestoredInterest').value,
@@ -612,35 +584,35 @@ exports.showInterest = async (req, res) => {
 
         // **********************************
       } else {
-        //check if carrier is already assigned shipment
+        //check if carrier is already assigned towRequest
 
-        const IsAssignedShipment = await AssignShipment.findOne({
-          where: { ShipmentId: ShipmentId, CompanyId: CompanyId },
+        const IsAssignedTowRequest = await AssignTowRequest.findOne({
+          where: { TowRequestId: TowRequestId, CompanyId: CompanyId },
         });
 
-        if (IsAssignedShipment) {
-          const updateShipment = await Shipment.update(
+        if (IsAssignedTowRequest) {
+          const updateTowRequest = await TowRequest.update(
             {
-              AssignedShipment: false,
-              ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'NotAssigned').value,
+              AssignedTowRequest: false,
+              TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'NotAssigned').value,
               AssignedCarrier: 0,
             },
 
-            { where: { ShipmentId: ShipmentId } },
+            { where: { TowRequestId: TowRequestId } },
           );
 
-          IsAssignedShipment.IsAssigned = false;
-          IsAssignedShipment.save();
+          IsAssignedTowRequest.IsAssigned = false;
+          IsAssignedTowRequest.save();
           //Send Mail to Shipper
 
-          const msgShipper = ` Interest for  Shipment with ref:${req.body.ShipmentId} from ${company.CompanyName} for Load Boarding Services has been withdrawn.Your shipment is now open for interest.`;
+          const msgShipper = ` Interest for  TowRequest with ref:${req.body.TowRequestId} from ${company.CompanyName} for Load Boarding Services has been withdrawn.Your towRequest is now open for interest.`;
 
           await mailFunc.sendEmail({
             template: 'interest',
             subject: 'Request for LoadBoarding Services',
-            toEmail: shipmentUser.User.Email,
+            toEmail: towRequestUser.User.Email,
             msg: {
-              name: shipmentUser.User.FullName,
+              name: towRequestUser.User.FullName,
               msg: msgShipper,
               //  url: url,
             },
@@ -649,14 +621,14 @@ exports.showInterest = async (req, res) => {
 
         const updatedInterestFalse = await Interested.update(
           { IsInterested: false },
-          { where: { ShipmentId: ShipmentId, UserId: UserId, CompanyId: CompanyId } },
+          { where: { TowRequestId: TowRequestId, UserId: UserId, CompanyId: CompanyId } },
         );
 
-        const trackShipment = await TrackShipment.create({
-          ShipmentId: ShipmentId,
+        const trackTowRequest = await TrackTowRequest.create({
+          TowRequestId: TowRequestId,
           UserId: UserId,
           CompanyId: CompanyId,
-          //  AssignShipmentId: IsAssignedShipment.AssignShipmentId ? IsAssignedShipment.AssignShipmentId : null,
+          //  AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId ? IsAssignedTowRequest.AssignTowRequestId : null,
           StartBy: UserId,
           StartByRole: ROLES.find((item) => item.value === 'carrier').value,
           StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'NotInterested').value,
@@ -681,64 +653,64 @@ exports.showInterest = async (req, res) => {
   }
 };
 
-exports.assignCompanyShipment = async (req, res) => {
+exports.assignCompanyTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
     // check if interest is placed by company
     const IsInterested = await Interested.findOne({
-      where: { ShipmentId: ShipmentId, CompanyId: CompanyId, IsInterested: true },
+      where: { TowRequestId: TowRequestId, CompanyId: CompanyId, IsInterested: true },
     });
 
     if (!IsInterested) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `No interest placed on Shipment with ref ${ShipmentId} from ${company.CompanyName}`,
+        message: `No interest placed on TowRequest with ref ${TowRequestId} from ${company.CompanyName}`,
       });
     }
 
-    // check if shipment was assigned to company
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true },
+    // check if towRequest was assigned to company
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true },
     });
-    if (IsAssignedShipment) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (IsAssignedTowRequest) {
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has been officially assigned to ${company.CompanyName}`,
+        message: `TowRequest with ref ${TowRequestId} has been officially assigned to ${company.CompanyName}`,
       });
     }
 
-    const newAssignment = await AssignShipment.create({
-      ShipmentId: ShipmentId,
+    const newAssignment = await AssignTowRequest.create({
+      TowRequestId: TowRequestId,
       CompanyId: CompanyId,
       UserId: UserId,
       AssignedTo: CompanyId,
       IsAssigned: true,
       IsContractSigned: false,
       IsContractAccepted: false,
-      ShipmentInterestId: IsInterested.ShipmentInterestId,
+      TowRequestInterestId: IsInterested.TowRequestInterestId,
       AssignedDate: new Date(),
     });
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
-        AssignedShipment: true,
-        ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'Assigned').value,
+        AssignedTowRequest: true,
+        TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'Assigned').value,
         AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
 
-    const trackShipment = await TrackShipment.create({
-      ShipmentId: ShipmentId,
+    const trackTowRequest = await TrackTowRequest.create({
+      TowRequestId: TowRequestId,
       UserId: UserId,
       CompanyId: CompanyId,
-      AssignShipmentId: newAssignment.AssignShipmentId,
+      AssignTowRequestId: newAssignment.AssignTowRequestId,
       StartBy: UserId,
       StartByRole: ROLES.find((item) => item.value === 'shipper').value,
       StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Assigned').value,
@@ -757,10 +729,10 @@ exports.assignCompanyShipment = async (req, res) => {
 
     const companyUser = await User.findOne({ where: { CompanyId: req.body.CompanyId }, order: [['createdAt', 'ASC']] });
 
-    const url = process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const url = process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
     //Send mail to Shipper
-    const msgShipment = `You have assigned Shipment with Ref No  ${ShipmentId} for Load Boarding Services to Company ${companyCarrier.CompanyName}.Kindly check the details    `;
+    const msgTowRequest = `You have assigned TowRequest with Ref No  ${TowRequestId} for Load Boarding Services to Company ${companyCarrier.CompanyName}.Kindly check the details    `;
 
     await mailFunc.sendEmail({
       template: 'interest',
@@ -768,31 +740,31 @@ exports.assignCompanyShipment = async (req, res) => {
       toEmail: user.Email,
       msg: {
         name: user.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
       },
     });
 
     //Send Mail to Carrier
-    const msgCarrier = `Congratulations! You have been assigned shipment with ref:${ShipmentId} for Load Boarding Services .Find Attached an agreement for you to sign.Kindly check the details `;
+    const msgCarrier = `Congratulations! You have been assigned towRequest with ref:${TowRequestId} for Load Boarding Services .Find Attached an agreement for you to sign.Kindly check the details `;
     const urlCarrier =
       process.env.ADMIN_URL +
-      `/user/user-contract/?shipmentId=${ShipmentId}&userId=${UserId}&companyId=${CompanyId}&action=sign`;
+      `/user/user-contract/?towRequestId=${TowRequestId}&userId=${UserId}&companyId=${CompanyId}&action=sign`;
     await mailFunc.sendEmail({
-      template: 'shipment',
-      subject: 'Shipment Assignment for LoadBoarding Services',
+      template: 'towRequest',
+      subject: 'TowRequest Assignment for LoadBoarding Services',
       toEmail: companyCarrier.ContactEmail,
       msg: {
         name: companyUser.FullName,
         msg: msgCarrier,
-        urlShipmentInfo: url,
-        urlShipmentContract: urlCarrier,
+        urlTowRequestInfo: url,
+        urlTowRequestContract: urlCarrier,
       },
       filename: 'shipper_carrier_agreement.pdf',
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been assigned to Company ${companyCarrier.CompanyName} `,
+      message: `TowRequest with Ref ${TowRequestId} has been assigned to Company ${companyCarrier.CompanyName} `,
       // data: newAssignment,
     });
   } catch (error) {
@@ -803,40 +775,40 @@ exports.assignCompanyShipment = async (req, res) => {
   }
 };
 
-exports.assignDriverShipment = async (req, res) => {
+exports.assignDriverTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
   const DriverId = req.body.DriverId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId },
     });
-    if (IsAssignedShipment === null) {
+    if (IsAssignedTowRequest === null) {
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has not been officially assigned`,
+        message: `TowRequest with ref ${TowRequestId} has not been officially assigned`,
       });
     }
-    const IsAssignedDriverShipment = await AssignDriverShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId, DriverId: DriverId },
+    const IsAssignedDriverTowRequest = await AssignDriverTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId, DriverId: DriverId },
     });
 
-    if (IsAssignedDriverShipment) {
+    if (IsAssignedDriverTowRequest) {
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has been assigned already`,
+        message: `TowRequest with ref ${TowRequestId} has been assigned already`,
       });
     }
 
     const driver = await Driver.findOne({ where: { DriverId: req.body.DriverId } });
 
-    const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+    const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-    const shipperUser = await User.findOne({ where: { UserId: shipment.UserId } });
+    const shipperUser = await User.findOne({ where: { UserId: towRequest.UserId } });
 
     const company = await Company.findOne({ where: { CompanyId: req.body.CompanyId } });
 
@@ -844,8 +816,8 @@ exports.assignDriverShipment = async (req, res) => {
 
     // AssignedTo Driver Field is populated with the Driver  UserId (Foriegn Key)  not the DriverId from Driver Entity
 
-    const newRecord = await AssignDriverShipment.create({
-      ShipmentId: ShipmentId,
+    const newRecord = await AssignDriverTowRequest.create({
+      TowRequestId: TowRequestId,
       CompanyId: CompanyId,
       UserId: UserId,
       DriverId: DriverId,
@@ -854,44 +826,44 @@ exports.assignDriverShipment = async (req, res) => {
       AssignedToDriver: driver.UserId,
     });
 
-    const trackShipment = await TrackShipment.create({
-      ShipmentId: ShipmentId,
+    const trackTowRequest = await TrackTowRequest.create({
+      TowRequestId: TowRequestId,
       UserId: UserId,
       CompanyId: CompanyId,
-      AssignShipmentId: IsAssignedShipment?.AssignShipmentId,
+      AssignTowRequestId: IsAssignedTowRequest?.AssignTowRequestId,
       StartBy: UserId,
       StartByRole: ROLES.find((item) => item.value === 'carrier').value,
-      StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'AssignedDriverShipment').value,
+      StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'AssignedDriverTowRequest').value,
       StartActionDate: new Date(),
       EndBy: UserId,
       EndByRole: ROLES.find((item) => item.value === 'carrier').value,
-      EndAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'AssignedDriverShipment').value,
+      EndAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'AssignedDriverTowRequest').value,
       EndActionDate: new Date(),
     });
 
     const url =
-      process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&driverId=${DriverId}&review=true`;
+      process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&driverId=${DriverId}&review=true`;
 
     //Send mail to Carrier
-    const msgShipment = `You have an assigned Shipment with Ref No  ${ShipmentId} for Load Boarding Services to driver ${driver.DriverName}.Kindly check the details  <a href=${url}>here</a>  `;
+    const msgTowRequest = `You have an assigned TowRequest with Ref No  ${TowRequestId} for Load Boarding Services to driver ${driver.DriverName}.Kindly check the details  <a href=${url}>here</a>  `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Assignment for LoadBoarding Services',
+      subject: 'TowRequest Assignment for LoadBoarding Services',
       toEmail: companyUser.Email,
       msg: {
         name: companyUser.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
       },
     });
 
     //Send mail to Shipper
-    const msgShipper = ` Shipment with Ref No  ${ShipmentId} for Load Boarding Services has been assigned  to driver ${driver.DriverName} of Company -${company.CompanyName}.Kindly check the details  `;
+    const msgShipper = ` TowRequest with Ref No  ${TowRequestId} for Load Boarding Services has been assigned  to driver ${driver.DriverName} of Company -${company.CompanyName}.Kindly check the details  `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Assignment for LoadBoarding Services',
+      subject: 'TowRequest Assignment for LoadBoarding Services',
       toEmail: shipperUser.Email,
       msg: {
         name: shipperUser.FullName,
@@ -900,12 +872,12 @@ exports.assignDriverShipment = async (req, res) => {
       },
     });
 
-    //Send Mail to Driver assigned shipment
-    const msgCarrier = `Congratulations! You have been assigned shipment with ref:${ShipmentId} for Load Boarding Services .Kindly check the details  `;
+    //Send Mail to Driver assigned towRequest
+    const msgCarrier = `Congratulations! You have been assigned towRequest with ref:${TowRequestId} for Load Boarding Services .Kindly check the details  `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Assignment for LoadBoarding Services',
+      subject: 'TowRequest Assignment for LoadBoarding Services',
       toEmail: driver.Email,
       msg: {
         name: driver.DriverName,
@@ -915,7 +887,7 @@ exports.assignDriverShipment = async (req, res) => {
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been assigned to Driver ${driver.DriverName} `,
+      message: `TowRequest with Ref ${TowRequestId} has been assigned to Driver ${driver.DriverName} `,
       data: newRecord,
     });
   } catch (error) {
@@ -926,40 +898,40 @@ exports.assignDriverShipment = async (req, res) => {
   }
 };
 
-exports.dispatchShipment = async (req, res) => {
+exports.dispatchTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true },
     });
-    if (!IsAssignedShipment) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (!IsAssignedTowRequest) {
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has not been officially assigned to ${company.CompanyName}`,
+        message: `TowRequest with ref ${TowRequestId} has not been officially assigned to ${company.CompanyName}`,
       });
     }
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
-        ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'Dispatched').value,
+        TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'Dispatched').value,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
 
-    const trackShipment = await TrackShipment.create({
-      ShipmentId: ShipmentId,
+    const trackTowRequest = await TrackTowRequest.create({
+      TowRequestId: TowRequestId,
       UserId: UserId,
       CompanyId: CompanyId,
-      AssignShipmentId: IsAssignedShipment.AssignShipmentId,
+      AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId,
       StartBy: UserId,
       StartByRole: ROLES.find((item) => item.value === 'driver').value,
       StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Dispatched').value,
@@ -971,16 +943,16 @@ exports.dispatchShipment = async (req, res) => {
     });
     //  console.log('TRIP_STATUS', TRIP_STATUS.find((item) => item.value === 'Assigned').value);
 
-    const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+    const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-    const user = await User.findOne({ where: { UserId: shipment.UserId } });
+    const user = await User.findOne({ where: { UserId: towRequest.UserId } });
 
     const company = await Company.findOne({ where: { CompanyId: req.body.CompanyId } });
 
     const companyUser = await User.findOne({ where: { CompanyId: req.body.CompanyId }, order: [['createdAt', 'ASC']] });
 
-    const IsAssignedDriverShipment = await AssignDriverShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedDriverTowRequest = await AssignDriverTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId, IsAssigned: true },
       include: [
         {
           model: Driver,
@@ -988,10 +960,10 @@ exports.dispatchShipment = async (req, res) => {
       ],
     });
 
-    const url = process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const url = process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
     //Send mail to Shipper
-    const msgShipment = `Your Shipment with Ref No  ${ShipmentId} for Load Boarding Services to Company ${company.CompanyName} has been dispatched successfully.Kindly check the details by clicking below   `;
+    const msgTowRequest = `Your TowRequest with Ref No  ${TowRequestId} for Load Boarding Services to Company ${company.CompanyName} has been dispatched successfully.Kindly check the details by clicking below   `;
 
     await mailFunc.sendEmail({
       template: 'interest',
@@ -999,17 +971,17 @@ exports.dispatchShipment = async (req, res) => {
       toEmail: user.Email,
       msg: {
         name: user.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
       },
     });
 
     //Send Mail to Carrier
-    const msgCarrier = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been dispatched .Kindly check the details by clicking below `;
+    const msgCarrier = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been dispatched .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Assignment for LoadBoarding Services',
+      subject: 'TowRequest Assignment for LoadBoarding Services',
       toEmail: companyUser.Email,
       msg: {
         name: companyUser.FullName,
@@ -1019,21 +991,21 @@ exports.dispatchShipment = async (req, res) => {
     });
 
     //Send Mail to driver
-    const msgDriver = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been dispatched .Kindly check the details by clicking below `;
+    const msgDriver = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been dispatched .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Assignment for LoadBoarding Services',
-      toEmail: IsAssignedDriverShipment.Driver.Email,
+      subject: 'TowRequest Assignment for LoadBoarding Services',
+      toEmail: IsAssignedDriverTowRequest.Driver.Email,
       msg: {
-        name: IsAssignedDriverShipment.Driver.DriverName,
+        name: IsAssignedDriverTowRequest.Driver.DriverName,
         msg: msgDriver,
         url: url,
       },
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been assigned to Company ${company.CompanyName} `,
+      message: `TowRequest with Ref ${TowRequestId} has been assigned to Company ${company.CompanyName} `,
     });
   } catch (error) {
     console.log(`err.message`, error.message);
@@ -1043,45 +1015,45 @@ exports.dispatchShipment = async (req, res) => {
   }
 };
 
-exports.pickedUpShipment = async (req, res) => {
+exports.pickedUpTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
   const Role = req.body.Role;
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true },
     });
-    if (!IsAssignedShipment) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (!IsAssignedTowRequest) {
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has not been officially assigned to ${company.CompanyName}`,
+        message: `TowRequest with ref ${TowRequestId} has not been officially assigned to ${company.CompanyName}`,
       });
     }
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
-        ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'PickedUp').value,
+        TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'PickedUp').value,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
 
-    const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+    const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-    const user = await User.findOne({ where: { UserId: shipment.UserId } });
+    const user = await User.findOne({ where: { UserId: towRequest.UserId } });
 
     const company = await Company.findOne({ where: { CompanyId: req.body.CompanyId } });
 
     const companyUser = await User.findOne({ where: { CompanyId: req.body.CompanyId }, order: [['createdAt', 'ASC']] });
 
-    const IsAssignedDriverShipment = await AssignDriverShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedDriverTowRequest = await AssignDriverTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId, IsAssigned: true },
       include: [
         {
           model: Driver,
@@ -1089,18 +1061,18 @@ exports.pickedUpShipment = async (req, res) => {
       ],
     });
 
-    const trackShipmentResult = await TrackShipment.findOne({
+    const trackTowRequestResult = await TrackTowRequest.findOne({
       where: {
-        ShipmentId: ShipmentId,
+        TowRequestId: TowRequestId,
         StartByRole: 'shipper',
         StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'SubmitForPickedUp').value,
       },
     });
 
-    if (trackShipmentResult) {
-      const trackShipmentUpdate = await TrackShipment.update(
+    if (trackTowRequestResult) {
+      const trackTowRequestUpdate = await TrackTowRequest.update(
         {
-          EndBy: Role === 'driver' ? IsAssignedDriverShipment.DriverId : UserId,
+          EndBy: Role === 'driver' ? IsAssignedDriverTowRequest.DriverId : UserId,
           EndByRole:
             Role === 'driver'
               ? ROLES.find((item) => item.value === 'driver').value
@@ -1113,7 +1085,7 @@ exports.pickedUpShipment = async (req, res) => {
 
         {
           where: {
-            ShipmentId: ShipmentId,
+            TowRequestId: TowRequestId,
             StartByRole: 'shipper',
             StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'SubmitForPickedUp').value,
           },
@@ -1121,16 +1093,16 @@ exports.pickedUpShipment = async (req, res) => {
       );
 
       return res.status(200).send({
-        message: `Shipment with Ref ${ShipmentId} has been Confirmed Picked Up by Driver  `,
+        message: `TowRequest with Ref ${TowRequestId} has been Confirmed Picked Up by Driver  `,
       });
     }
 
-    const trackShipment = await TrackShipment.create({
-      ShipmentId: ShipmentId,
+    const trackTowRequest = await TrackTowRequest.create({
+      TowRequestId: TowRequestId,
       UserId: UserId,
       CompanyId: CompanyId,
-      AssignShipmentId: IsAssignedShipment.AssignShipmentId,
-      StartBy: Role === 'driver' ? IsAssignedDriverShipment.DriverId : UserId,
+      AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId,
+      StartBy: Role === 'driver' ? IsAssignedDriverTowRequest.DriverId : UserId,
       StartByRole:
         Role === 'driver'
           ? ROLES.find((item) => item.value === 'driver').value
@@ -1142,31 +1114,31 @@ exports.pickedUpShipment = async (req, res) => {
     });
     //  console.log('TRIP_STATUS', TRIP_STATUS.find((item) => item.value === 'Assigned').value);
 
-    const url = process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const url = process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
-    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
     //Send mail to Shipper
-    const msgShipment = `Your Shipment with Ref No  ${ShipmentId} for Load Boarding Services to Company ${company.CompanyName} has been picked up successfully.Kindly check the details by clicking below   `;
+    const msgTowRequest = `Your TowRequest with Ref No  ${TowRequestId} for Load Boarding Services to Company ${company.CompanyName} has been picked up successfully.Kindly check the details by clicking below   `;
 
     await mailFunc.sendEmail({
       template: 'track',
-      subject: 'Shipment Picked Up',
+      subject: 'TowRequest Picked Up',
       toEmail: user.Email,
       msg: {
         name: user.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
         urlTrack: urltrack,
       },
     });
 
     //Send Mail to Carrier
-    const msgCarrier = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been picked up .Kindly check the details by clicking below `;
+    const msgCarrier = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been picked up .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Picked Up ',
+      subject: 'TowRequest Picked Up ',
       toEmail: companyUser.Email,
       msg: {
         name: companyUser.FullName,
@@ -1176,21 +1148,21 @@ exports.pickedUpShipment = async (req, res) => {
     });
 
     //Send Mail to driver
-    const msgDriver = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been picked up .Kindly check the details by clicking below `;
+    const msgDriver = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been picked up .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Picked Up ',
-      toEmail: IsAssignedDriverShipment.Driver.Email,
+      subject: 'TowRequest Picked Up ',
+      toEmail: IsAssignedDriverTowRequest.Driver.Email,
       msg: {
-        name: IsAssignedDriverShipment.Driver.DriverName,
+        name: IsAssignedDriverTowRequest.Driver.DriverName,
         msg: msgDriver,
         url: url,
       },
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been picked Up by ${user.FullName} for Shipper  `,
+      message: `TowRequest with Ref ${TowRequestId} has been picked Up by ${user.FullName} for Shipper  `,
     });
   } catch (error) {
     console.log(`err.message`, error.message);
@@ -1200,46 +1172,46 @@ exports.pickedUpShipment = async (req, res) => {
   }
 };
 
-exports.deliveredShipment = async (req, res) => {
+exports.deliveredTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
   const Role = req.body.Role;
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true },
     });
-    if (!IsAssignedShipment) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (!IsAssignedTowRequest) {
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has not been officially assigned to ${company.CompanyName}`,
+        message: `TowRequest with ref ${TowRequestId} has not been officially assigned to ${company.CompanyName}`,
       });
     }
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
-        ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'Delivered').value,
+        TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'Delivered').value,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
     //  console.log('TRIP_STATUS', TRIP_STATUS.find((item) => item.value === 'Assigned').value);
 
-    const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+    const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-    const user = await User.findOne({ where: { UserId: shipment.UserId } });
+    const user = await User.findOne({ where: { UserId: towRequest.UserId } });
 
     const company = await Company.findOne({ where: { CompanyId: req.body.CompanyId } });
 
     const companyUser = await User.findOne({ where: { CompanyId: req.body.CompanyId }, order: [['createdAt', 'ASC']] });
 
-    const IsAssignedDriverShipment = await AssignDriverShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedDriverTowRequest = await AssignDriverTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId, IsAssigned: true },
       include: [
         {
           model: Driver,
@@ -1247,16 +1219,16 @@ exports.deliveredShipment = async (req, res) => {
       ],
     });
 
-    const trackShipmentResult = await TrackShipment.findOne({
+    const trackTowRequestResult = await TrackTowRequest.findOne({
       where: {
-        ShipmentId: ShipmentId,
+        TowRequestId: TowRequestId,
         StartByRole: 'driver',
         StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Delivered').value,
       },
     });
 
-    if (trackShipmentResult) {
-      const trackShipmentUpdate = await TrackShipment.update(
+    if (trackTowRequestResult) {
+      const trackTowRequestUpdate = await TrackTowRequest.update(
         {
           EndBy: Role === UserId,
           EndByRole: ROLES.find((item) => item.value === 'shipper').value,
@@ -1267,34 +1239,34 @@ exports.deliveredShipment = async (req, res) => {
 
         {
           where: {
-            ShipmentId: ShipmentId,
+            TowRequestId: TowRequestId,
             StartByRole: 'driver',
             StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Delivered').value,
           },
         },
       );
-      if (trackShipmentUpdate) {
+      if (trackTowRequestUpdate) {
         return res.status(200).send({
-          message: `Shipment with Ref ${ShipmentId} has been Confirmed Delivered by Shipper  `,
+          message: `TowRequest with Ref ${TowRequestId} has been Confirmed Delivered by Shipper  `,
         });
       }
     }
 
-    const trackShipment = await TrackShipment.create({
-      ShipmentId: ShipmentId,
+    const trackTowRequest = await TrackTowRequest.create({
+      TowRequestId: TowRequestId,
       UserId: UserId,
       CompanyId: CompanyId,
-      AssignShipmentId: IsAssignedShipment.AssignShipmentId,
-      StartBy: IsAssignedDriverShipment.DriverId,
+      AssignTowRequestId: IsAssignedTowRequest.AssignTowRequestId,
+      StartBy: IsAssignedDriverTowRequest.DriverId,
       StartByRole: ROLES.find((item) => item.value === 'driver').value,
       StartAction: TRACK_SHIPMENT_STATUS.find((item) => item.value === 'Delivered').value,
       StartActionDate: new Date(),
     });
-    const url = process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
-    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const url = process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
+    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
     //Send mail to Shipper
-    const msgShipment = `Your Shipment with Ref No-${ShipmentId} for Load Boarding Services from Company ${company.CompanyName} has been delivered successfully.Kindly check the details by clicking below   `;
+    const msgTowRequest = `Your TowRequest with Ref No-${TowRequestId} for Load Boarding Services from Company ${company.CompanyName} has been delivered successfully.Kindly check the details by clicking below   `;
 
     await mailFunc.sendEmail({
       template: 'track',
@@ -1302,18 +1274,18 @@ exports.deliveredShipment = async (req, res) => {
       toEmail: user.Email,
       msg: {
         name: user.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
         urlTrack: urltrack,
       },
     });
 
     //Send Mail to Carrier
-    const msgCarrier = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been delivered .Kindly check the details by clicking below `;
+    const msgCarrier = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been delivered .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Delivery for LoadBoarding Services',
+      subject: 'TowRequest Delivery for LoadBoarding Services',
       toEmail: companyUser.Email,
       msg: {
         name: companyUser.FullName,
@@ -1323,21 +1295,21 @@ exports.deliveredShipment = async (req, res) => {
     });
 
     //Send Mail to driver
-    const msgDriver = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been delivered .Kindly check the details by clicking below `;
+    const msgDriver = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been delivered .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: 'Shipment Delivery for LoadBoarding Services',
-      toEmail: IsAssignedDriverShipment.Driver.Email,
+      subject: 'TowRequest Delivery for LoadBoarding Services',
+      toEmail: IsAssignedDriverTowRequest.Driver.Email,
       msg: {
-        name: IsAssignedDriverShipment.Driver.DriverName,
+        name: IsAssignedDriverTowRequest.Driver.DriverName,
         msg: msgDriver,
         url: url,
       },
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been delivered `,
+      message: `TowRequest with Ref ${TowRequestId} has been delivered `,
     });
   } catch (error) {
     console.log(`err.message`, error.message);
@@ -1347,55 +1319,55 @@ exports.deliveredShipment = async (req, res) => {
   }
 };
 
-exports.cancelShipment = async (req, res) => {
+exports.cancelTowRequest = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true },
     });
-    if (!IsAssignedShipment) {
-      const company = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (!IsAssignedTowRequest) {
+      const company = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
       res.status(200).send({
-        message: `Shipment with ref ${ShipmentId} has not been officially assigned to ${company.CompanyName}`,
+        message: `TowRequest with ref ${TowRequestId} has not been officially assigned to ${company.CompanyName}`,
       });
     }
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
-        ShipmentStatus: TRIP_STATUS.find((item) => item.value === 'Cancelled').value,
+        TowRequestStatus: TRIP_STATUS.find((item) => item.value === 'Cancelled').value,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
 
-    const assignedShipment = await AssignShipment.update(
+    const assignedTowRequest = await AssignTowRequest.update(
       {
         IsAssigned: false,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId, IsAssigned: true } },
+      { where: { TowRequestId: TowRequestId, IsAssigned: true } },
     );
     //  console.log('TRIP_STATUS', TRIP_STATUS.find((item) => item.value === 'Assigned').value);
 
-    const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+    const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-    const user = await User.findOne({ where: { UserId: shipment.UserId } });
+    const user = await User.findOne({ where: { UserId: towRequest.UserId } });
 
     const company = await Company.findOne({ where: { CompanyId: req.body.CompanyId } });
 
     const companyUser = await User.findOne({ where: { CompanyId: req.body.CompanyId }, order: [['createdAt', 'ASC']] });
 
-    const IsAssignedDriverShipment = await AssignDriverShipment.findOne({
-      where: { CompanyId: CompanyId, ShipmentId: ShipmentId, IsAssigned: true },
+    const IsAssignedDriverTowRequest = await AssignDriverTowRequest.findOne({
+      where: { CompanyId: CompanyId, TowRequestId: TowRequestId, IsAssigned: true },
       include: [
         {
           model: Driver,
@@ -1403,30 +1375,30 @@ exports.cancelShipment = async (req, res) => {
       ],
     });
 
-    const url = process.env.ADMIN_URL + `/shipment/assign-shipment/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const url = process.env.ADMIN_URL + `/towRequest/assign-towRequest/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
-    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?shipmentId=${ShipmentId}&companyId=${CompanyId}`;
+    const urltrack = process.env.ADMIN_URL + `/trip/track-info/?towRequestId=${TowRequestId}&companyId=${CompanyId}`;
 
     //Send mail to Shipper
-    const msgShipment = `Your Shipment with Ref No  ${ShipmentId} for Load Boarding Services from Company ${company.CompanyName} has been cancelled successfully.Kindly check the details by clicking below   `;
+    const msgTowRequest = `Your TowRequest with Ref No  ${TowRequestId} for Load Boarding Services from Company ${company.CompanyName} has been cancelled successfully.Kindly check the details by clicking below   `;
 
     await mailFunc.sendEmail({
       template: 'generic',
-      subject: 'Cancelled Shipment ',
+      subject: 'Cancelled TowRequest ',
       toEmail: user.Email,
       msg: {
         name: user.FullName,
-        msg: msgShipment,
+        msg: msgTowRequest,
         url: url,
       },
     });
 
     //Send Mail to Carrier
-    const msgCarrier = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been cancelled by shipper .Kindly check the details by clicking below `;
+    const msgCarrier = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been cancelled by shipper .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: `Cancelled Shipment ref:${ShipmentId}`,
+      subject: `Cancelled TowRequest ref:${TowRequestId}`,
       toEmail: companyUser.Email,
       msg: {
         name: companyUser.FullName,
@@ -1436,21 +1408,21 @@ exports.cancelShipment = async (req, res) => {
     });
 
     //Send Mail to driver
-    const msgDriver = ` Shipment with ref:${ShipmentId} for Load Boarding Services has been cancelled .Kindly check the details by clicking below `;
+    const msgDriver = ` TowRequest with ref:${TowRequestId} for Load Boarding Services has been cancelled .Kindly check the details by clicking below `;
 
     await mailFunc.sendEmail({
       template: 'interest',
-      subject: `Cancelled Shipment ref:${ShipmentId}`,
-      toEmail: IsAssignedDriverShipment.Driver.Email,
+      subject: `Cancelled TowRequest ref:${TowRequestId}`,
+      toEmail: IsAssignedDriverTowRequest.Driver.Email,
       msg: {
-        name: IsAssignedDriverShipment.Driver.FullName,
+        name: IsAssignedDriverTowRequest.Driver.FullName,
         msg: msgDriver,
         url: url,
       },
     });
 
     res.status(200).send({
-      message: `Shipment with Ref ${ShipmentId} has been cancelled `,
+      message: `TowRequest with Ref ${TowRequestId} has been cancelled `,
       data: newAssignment,
     });
   } catch (error) {
@@ -1461,44 +1433,44 @@ exports.cancelShipment = async (req, res) => {
   }
 };
 
-exports.archiveShipment = async (req, res) => {
-  const ShipmentId = req.body.ShipmentId;
+exports.archiveTowRequest = async (req, res) => {
+  const TowRequestId = req.body.TowRequestId;
 
   // const InterestDate = req.body.InterestDate;
 
   try {
-    // check if shipment was assigned to company
+    // check if towRequest was assigned to company
 
-    const shipmentArchived = await Shipment.findOne({
-      where: { ShipmentId: ShipmentId, IsArchived: true },
+    const towRequestArchived = await TowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsArchived: true },
     });
-    if (shipmentArchived) {
-      await Shipment.update(
+    if (towRequestArchived) {
+      await TowRequest.update(
         {
           IsArchived: false,
           // AssignedCarrier: CompanyId,
         },
 
-        { where: { ShipmentId: ShipmentId } },
+        { where: { TowRequestId: TowRequestId } },
       );
 
       return res.status(200).send({
-        message: `Shipment record with ref ${ShipmentId} is removed from the archived list`,
+        message: `TowRequest record with ref ${TowRequestId} is removed from the archived list`,
       });
     }
 
-    const updateShipment = await Shipment.update(
+    const updateTowRequest = await TowRequest.update(
       {
         IsArchived: true,
         // AssignedCarrier: CompanyId,
       },
 
-      { where: { ShipmentId: ShipmentId } },
+      { where: { TowRequestId: TowRequestId } },
     );
 
-    if (updateShipment) {
+    if (updateTowRequest) {
       return res.status(200).send({
-        message: `Shipment record with ref ${ShipmentId} is added to the archived list`,
+        message: `TowRequest record with ref ${TowRequestId} is added to the archived list`,
       });
     }
     //  console.log('TRIP_STATUS', TRIP_STATUS.find((item) => item.value === 'Assigned').value);
@@ -1513,18 +1485,18 @@ exports.archiveShipment = async (req, res) => {
 exports.sendRemindEmail = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   try {
-    const IsAssignedShipment = await AssignShipment.findOne({
-      where: { ShipmentId: ShipmentId, IsAssigned: true, CompanyId: CompanyId, IsContractSigned: false },
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
+      where: { TowRequestId: TowRequestId, IsAssigned: true, CompanyId: CompanyId, IsContractSigned: false },
     });
-    if (IsAssignedShipment) {
+    if (IsAssignedTowRequest) {
       const companyCarrier = await Company.findOne({ where: { CompanyId: CompanyId } });
 
-      const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+      const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-      const companyShipper = await Company.findOne({ where: { CompanyId: shipment.CompanyId } });
+      const companyShipper = await Company.findOne({ where: { CompanyId: towRequest.CompanyId } });
 
       const companyUser = await User.findOne({ where: { CompanyId: CompanyId }, order: [['createdAt', 'ASC']] });
 
@@ -1533,7 +1505,7 @@ exports.sendRemindEmail = async (req, res) => {
 
       await mailFunc.sendEmail({
         template: 'generic',
-        subject: 'Shipment Assignment for LoadBoarding Services',
+        subject: 'TowRequest Assignment for LoadBoarding Services',
         toEmail: companyCarrier.ContactEmail,
         msg: {
           name: companyUser.FullName,
@@ -1558,65 +1530,65 @@ exports.sendRemindEmail = async (req, res) => {
 exports.contractSigned = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
   const Role = req.body.Role;
 
   try {
-    const IsAssignedShipment = await AssignShipment.findOne({
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
       where: {
-        ShipmentId: ShipmentId,
+        TowRequestId: TowRequestId,
         IsAssigned: true,
         CompanyId: CompanyId,
       },
     });
-    if (!IsAssignedShipment) {
+    if (!IsAssignedTowRequest) {
       return res.status(200).send({
         message: `No Assignment has been confirmed as done.kindly contact administrator for help`,
       });
     }
-    if (IsAssignedShipment) {
-      if (Role === 'carrier' && IsAssignedShipment.IsContractSigned === true) {
+    if (IsAssignedTowRequest) {
+      if (Role === 'carrier' && IsAssignedTowRequest.IsContractSigned === true) {
         return res.status(200).send({
           message: `Contract has been signed already.`,
         });
       }
 
-      if (Role === 'shipper' && IsAssignedShipment.IsContractConfirmed === true) {
+      if (Role === 'shipper' && IsAssignedTowRequest.IsContractConfirmed === true) {
         return res.status(200).send({
           message: `Contract has been confirmed already.`,
         });
       }
 
-      const companyCarrier = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+      const companyCarrier = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
 
-      const shipment = await Shipment.findOne({ where: { ShipmentId: ShipmentId } });
+      const towRequest = await TowRequest.findOne({ where: { TowRequestId: TowRequestId } });
 
-      const user = await User.findOne({ where: { UserId: shipment.UserId } });
+      const user = await User.findOne({ where: { UserId: towRequest.UserId } });
 
       const companyUser = await User.findOne({
-        where: { CompanyId: IsAssignedShipment.CompanyId },
+        where: { CompanyId: IsAssignedTowRequest.CompanyId },
         order: [['createdAt', 'ASC']],
       });
 
       const companyShipper = await Company.findOne({ where: { CompanyId: user.CompanyId } });
 
-      //Update AssignShipment Table
+      //Update AssignTowRequest Table
 
       const updateVar = Role === 'carrier' ? { IsContractSigned: true } : { IsContractConfirmed: true };
       console.log('updatevar', updateVar);
-      const assignShipment = await AssignShipment.update(
+      const assignTowRequest = await AssignTowRequest.update(
         updateVar,
 
-        { where: { ShipmentId: ShipmentId, IsAssigned: true, CompanyId: CompanyId } },
+        { where: { TowRequestId: TowRequestId, IsAssigned: true, CompanyId: CompanyId } },
       );
 
-      if (assignShipment.IsContractConfirmed === true) {
+      if (assignTowRequest.IsContractConfirmed === true) {
         //Send Mail to Carrier
         const msgCarrier = `Company (${companyShipper.CompanyName}) has recieved your copy of the agreement, and thus officially look to complete all documentation processes. `;
 
         await mailFunc.sendEmail({
           template: 'generic',
-          subject: 'Shipment Assignment for LoadBoarding Services',
+          subject: 'TowRequest Assignment for LoadBoarding Services',
           toEmail: companyCarrier.ContactEmail ? companyCarrier.ContactEmail : companyUser.Email,
           msg: {
             name: companyUser.FullName,
@@ -1641,38 +1613,38 @@ exports.contractSigned = async (req, res) => {
 exports.contractAccepted = async (req, res) => {
   const CompanyId = req.body.CompanyId;
   const UserId = req.body.UserId;
-  const ShipmentId = req.body.ShipmentId;
+  const TowRequestId = req.body.TowRequestId;
 
   try {
-    const IsAssignedShipment = await AssignShipment.findOne({
+    const IsAssignedTowRequest = await AssignTowRequest.findOne({
       where: {
-        ShipmentId: ShipmentId,
+        TowRequestId: TowRequestId,
         IsAssigned: true,
         CompanyId: CompanyId,
         IsContractSigned: true,
         IsContractAccepted: false,
       },
     });
-    if (IsAssignedShipment) {
-      const companyCarrier = await Company.findOne({ where: { CompanyId: IsAssignedShipment.CompanyId } });
+    if (IsAssignedTowRequest) {
+      const companyCarrier = await Company.findOne({ where: { CompanyId: IsAssignedTowRequest.CompanyId } });
 
       const user = await User.findOne({ where: { UserId: UserId } });
 
       const companyUser = await User.findOne({
-        where: { CompanyId: IsAssignedShipment.CompanyId },
+        where: { CompanyId: IsAssignedTowRequest.CompanyId },
         order: [['createdAt', 'ASC']],
       });
 
       const companyShipper = await Company.findOne({ where: { CompanyId: user.CompanyId } });
 
-      const assignShipment = await AssignShipment.update(
+      const assignTowRequest = await AssignTowRequest.update(
         {
           IsContractAccepted: true,
 
           // AssignedCarrier: CompanyId,
         },
 
-        { where: { ShipmentId: ShipmentId, IsAssigned: true, CompanyId: CompanyId, IsContractSigned: true } },
+        { where: { TowRequestId: TowRequestId, IsAssigned: true, CompanyId: CompanyId, IsContractSigned: true } },
       );
 
       //Send Mail to Carrier
@@ -1680,7 +1652,7 @@ exports.contractAccepted = async (req, res) => {
 
       await mailFunc.sendEmail({
         template: 'generic',
-        subject: 'Shipment Assignment for LoadBoarding Services',
+        subject: 'TowRequest Assignment for LoadBoarding Services',
         toEmail: companyCarrier.ContactEmail ? companyCarrier.ContactEmail : companyUser.Email,
         msg: {
           name: companyUser.FullName,
@@ -1702,12 +1674,12 @@ exports.contractAccepted = async (req, res) => {
   }
 };
 
-exports.findAllShipmentsInterest = (req, res) => {
-  // const status = req.params.shipmentStatus;
-  // const shipmentId = req.params.shipmentId;
-  // var condition = shipmentId
-  //   ? { [Op.and]: [{ ShipmentId: shipmentId }, { ShipmentStatus: status }] }
-  //   : { ShipmentStatus: status };
+exports.findAllTowRequestsInterest = (req, res) => {
+  // const status = req.params.towRequestStatus;
+  // const towRequestId = req.params.towRequestId;
+  // var condition = towRequestId
+  //   ? { [Op.and]: [{ TowRequestId: towRequestId }, { TowRequestStatus: status }] }
+  //   : { TowRequestStatus: status };
 
   Interested.findAll({
     where: { IsInterested: true },
@@ -1721,7 +1693,7 @@ exports.findAllShipmentsInterest = (req, res) => {
         model: Company,
       },
       {
-        model: Shipment,
+        model: TowRequest,
       },
     ],
   })
@@ -1734,20 +1706,20 @@ exports.findAllShipmentsInterest = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllShipmentsInterestByShipmentId = (req, res) => {
-  // const status = req.params.shipmentStatus;
-  const shipmentId = req.params.shipmentId;
-  // var condition = shipmentId
-  //   ? { [Op.and]: [{ ShipmentId: shipmentId }, { ShipmentStatus: status }] }
-  //   : { ShipmentStatus: status };
+exports.findAllTowRequestsInterestByTowRequestId = (req, res) => {
+  // const status = req.params.towRequestStatus;
+  const towRequestId = req.params.towRequestId;
+  // var condition = towRequestId
+  //   ? { [Op.and]: [{ TowRequestId: towRequestId }, { TowRequestStatus: status }] }
+  //   : { TowRequestStatus: status };
 
   Interested.findAll({
-    where: { IsInterested: true, ShipmentId: shipmentId },
+    where: { IsInterested: true, TowRequestId: towRequestId },
 
     include: [
       {
@@ -1758,7 +1730,7 @@ exports.findAllShipmentsInterestByShipmentId = (req, res) => {
         model: Company,
       },
       {
-        model: Shipment,
+        model: TowRequest,
       },
     ],
   })
@@ -1771,16 +1743,16 @@ exports.findAllShipmentsInterestByShipmentId = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
-exports.findAllShipmentsInterestByCompany = (req, res) => {
-  // const status = req.params.shipmentStatus;
+exports.findAllTowRequestsInterestByCompany = (req, res) => {
+  // const status = req.params.towRequestStatus;
   const companyId = req.params.companyId;
-  // var condition = shipmentId
-  //   ? { [Op.and]: [{ ShipmentId: shipmentId }, { ShipmentStatus: status }] }
-  //   : { ShipmentStatus: status };
+  // var condition = towRequestId
+  //   ? { [Op.and]: [{ TowRequestId: towRequestId }, { TowRequestStatus: status }] }
+  //   : { TowRequestStatus: status };
 
   Interested.findAll({
     where: { IsInterested: true, CompanyId: companyId },
@@ -1791,7 +1763,7 @@ exports.findAllShipmentsInterestByCompany = (req, res) => {
         attributes: ['FullName'],
       },
       {
-        model: Shipment,
+        model: TowRequest,
       },
     ],
   })
@@ -1804,12 +1776,12 @@ exports.findAllShipmentsInterestByCompany = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllShipmentsInterestByDate = (req, res) => {
+exports.findAllTowRequestsInterestByDate = (req, res) => {
   const startDate = req.params.startDate;
   const endDate = req.params.endDate;
 
@@ -1837,20 +1809,20 @@ exports.findAllShipmentsInterestByDate = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllAssignShipment = (req, res) => {
-  AssignShipment.findAll({
+exports.findAllAssignTowRequest = (req, res) => {
+  AssignTowRequest.findAll({
     include: [
       {
         model: User,
         attributes: ['FullName'],
       },
       {
-        model: Shipment,
+        model: TowRequest,
       },
     ],
     order: [['createdAt', 'DESC']],
@@ -1864,51 +1836,13 @@ exports.findAllAssignShipment = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };
 
-exports.findAllAssignDriverShipment = (req, res) => {
-  AssignDriverShipment.findAll({
-    include: [
-      {
-        model: User,
-        attributes: ['FullName'],
-      },
-      {
-        model: Company,
-      },
-      {
-        model: Driver,
-      },
-      {
-        model: Shipment,
-      },
-    ],
-    order: [['createdAt', 'DESC']],
-  })
-
-    .then((data) => {
-      res.status(200).send({
-        message: 'Success',
-        data: data,
-      });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
-      });
-    });
-};
-
-
-exports.findAssignDriverShipment = (req, res) => {
-
-  const shipmentId = req.params.shipmentId;
-
-  AssignDriverShipment.findOne({
-    where: { ShipmentId: shipmentId },
+exports.findAllAssignDriverTowRequest = (req, res) => {
+  AssignDriverTowRequest.findAll({
     include: [
       {
         model: User,
@@ -1921,7 +1855,7 @@ exports.findAssignDriverShipment = (req, res) => {
         model: Driver,
       },
       {
-        model: Shipment,
+        model: TowRequest,
       },
     ],
     order: [['createdAt', 'DESC']],
@@ -1935,7 +1869,45 @@ exports.findAssignDriverShipment = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving Shipments.',
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
+      });
+    });
+};
+
+
+exports.findAssignDriverTowRequest = (req, res) => {
+
+  const towRequestId = req.params.towRequestId;
+
+  AssignDriverTowRequest.findOne({
+    where: { TowRequestId: towRequestId },
+    include: [
+      {
+        model: User,
+        attributes: ['FullName'],
+      },
+      {
+        model: Company,
+      },
+      {
+        model: Driver,
+      },
+      {
+        model: TowRequest,
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+  })
+
+    .then((data) => {
+      res.status(200).send({
+        message: 'Success',
+        data: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving TowRequests.',
       });
     });
 };

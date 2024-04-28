@@ -5,10 +5,12 @@
     "title": "TowTruckMove REST API",
     "description": ""
   },
-  "host": "towtruckmove-api.onrender.com",
-  "basePath": "/",
+  "host1": "towtruckmove-api.onrender.com",
+  "host": "localhost:8000",
   "tags": [],
-  "schemes": ["https"],
+  "schemes": [
+    "http"
+  ],
   "consumes": [],
   "produces": [],
   "paths": {
@@ -26,16 +28,13 @@
                 "Email": {
                   "example": "any"
                 },
-                "CompanyName": {
+                "ParkName": {
                   "example": "any"
                 },
-                "ContactEmail": {
+                "Phone": {
                   "example": "any"
                 },
-                "ContactPhone": {
-                  "example": "any"
-                },
-                "CompanyAddress": {
+                "Address": {
                   "example": "any"
                 },
                 "Region": {
@@ -56,6 +55,9 @@
                 "Password": {
                   "example": "any"
                 },
+                "ContactEmail": {
+                  "example": "any"
+                },
                 "FullName": {
                   "example": "any"
                 },
@@ -63,21 +65,6 @@
                   "example": "any"
                 },
                 "LastName": {
-                  "example": "any"
-                },
-                "Phone": {
-                  "example": "any"
-                },
-                "Address": {
-                  "example": "any"
-                },
-                "AcceptTerms": {
-                  "example": "any"
-                },
-                "PaymentMethod": {
-                  "example": "any"
-                },
-                "Currency": {
                   "example": "any"
                 }
               }
@@ -275,6 +262,33 @@
         }
       }
     },
+    "/api/park/findAllParksByLocation/{givenLongitude}/{givenLatitude}/{maxDistance}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "givenLongitude",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "givenLatitude",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "maxDistance",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/api/park/findAllparksByDate/{startDate}/{endDate}": {
       "get": {
         "tags": [],
@@ -317,6 +331,9 @@
                 "ParkType": {
                   "example": "any"
                 },
+                "ParkName": {
+                  "example": "any"
+                },
                 "FleetType": {
                   "example": "any"
                 },
@@ -329,7 +346,19 @@
                 "ServiceDescription": {
                   "example": "any"
                 },
+                "ParkLocation": {
+                  "example": "any"
+                },
+                "Address": {
+                  "example": "any"
+                },
                 "Rating": {
+                  "example": "any"
+                },
+                "Latitude": {
+                  "example": "any"
+                },
+                "Longitude": {
                   "example": "any"
                 },
                 "Licensed": {
@@ -411,7 +440,109 @@
         }
       }
     },
-    "/api/delete/deleteRecord": {
+    "/api/carrier/findOne/{carrierId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "carrierId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/findAll": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/findAllCarriersByCompany/{companyId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/findAllCarriersLicensed": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/findAllCarriersByDate/{startDate}/{endDate}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/create": {
       "post": {
         "tags": [],
         "description": "",
@@ -422,13 +553,28 @@
             "schema": {
               "type": "object",
               "properties": {
-                "tbl": {
+                "CarrierType": {
                   "example": "any"
                 },
-                "fld": {
+                "FleetType": {
                   "example": "any"
                 },
-                "val": {
+                "FleetNumber": {
+                  "example": "any"
+                },
+                "AboutUs": {
+                  "example": "any"
+                },
+                "ServiceDescription": {
+                  "example": "any"
+                },
+                "Rating": {
+                  "example": "any"
+                },
+                "Licensed": {
+                  "example": "any"
+                },
+                "CompanyId": {
                   "example": "any"
                 }
               }
@@ -436,6 +582,68 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/update/{carrierId}": {
+      "put": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "carrierId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/delete/{carrierId}": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "carrierId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/carrier/deleteAll": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -2077,6 +2285,812 @@
       }
     },
     "/api/shipment/deleteAll": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findOne/{towrequestId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAll/{userId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAll": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllAssignTowRequest": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllAssignDriverTowRequest": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllTowRequestsByStatus/{towrequestStatus}/{towrequestid}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestStatus",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "towrequestid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "\r/api/towrequest/findAllTowRequestsByDate/{startDate}/{endDate}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllTowRequestsByPickUpDate/{startDate}/{endDate}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllTowRequestsAssigned/{towrequestId}/{assignedtowrequest}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "assignedtowrequest",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllTowRequestsInterest": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "\r/api/towrequest/findAllTowRequestsInterestByTowRequestId/{towrequestId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAllTowRequestsInterestByCompany/{companyId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/findAssignDriverTowRequest/{towrequestId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/assignCompanyTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/assignDriverTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "DriverId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/showInterest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/dispatchTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/pickedUpTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/deliveredTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/cancelTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/archiveTowRequest": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/sendRemindEmail": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/contractSigned": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                },
+                "Role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/contractAccepted": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "CompanyId": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "TowRequestId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/create": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "VehicleType": {
+                  "example": "any"
+                },
+                "UserId": {
+                  "example": "any"
+                },
+                "VehicleNumber": {
+                  "example": "any"
+                },
+                "SerialNumber": {
+                  "example": "any"
+                },
+                "VehicleMake": {
+                  "example": "any"
+                },
+                "VehicleColor": {
+                  "example": "any"
+                },
+                "LicensePlate": {
+                  "example": "any"
+                },
+                "VehicleModel": {
+                  "example": "any"
+                },
+                "VehicleModelYear": {
+                  "example": "any"
+                },
+                "PicUrl": {
+                  "example": "any"
+                },
+                "Description": {
+                  "example": "any"
+                },
+                "longitude": {
+                  "example": "any"
+                },
+                "latitude": {
+                  "example": "any"
+                },
+                "IncidentLocation": {
+                  "example": "any"
+                },
+                "IsApproved": {
+                  "example": "any"
+                },
+                "DeliveryCity": {
+                  "example": "any"
+                },
+                "Insured": {
+                  "example": "any"
+                },
+                "TowRequestPrice": {
+                  "example": "any"
+                },
+                "TowRequestDate": {
+                  "example": "any"
+                },
+                "TowRequestDocs": {
+                  "example": "any"
+                },
+                "TowRequestStatus": {
+                  "example": "any"
+                },
+                "ParkId": {
+                  "example": "any"
+                },
+                "AssignedDriverId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/update/{towrequestId}": {
+      "put": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/delete/{towrequestId}": {
+      "delete": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "towrequestId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/towrequest/deleteAll": {
       "delete": {
         "tags": [],
         "description": "",

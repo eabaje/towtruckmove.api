@@ -1,6 +1,8 @@
 const db = require('../models/index.model');
 const Park = db.park;
 const Company = db.company;
+const Vehicle = db.vehicle;
+const Driver = db.driver;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Park
@@ -8,22 +10,32 @@ exports.create = (req, res) => {
   // Validate request
 
   // Create a Park
-  const Park = {
+  const park = {
     ParkType: req.body.ParkType,
+    ParkName: req.body.ParkName,
     FleetType: req.body.FleetType,
     FleetNumber: req.body.FleetNumber,
     AboutUs: req.body.AboutUs,
     ServiceDescription: req.body.ServiceDescription,
+    ParkLocation:req.body.ParkLocation,
+    Address:req.body.Address,
     Rating: req.body.Rating,
+    Latitude:req.body.Latitude,
+    Longitude:req.body.Longitude,
     Licensed: req.body.Licensed ? req.body.Licensed : false,
     CompanyId: req.body.CompanyId,
     // ParkDocs: req.body.ParkDocs
   };
 
   // Save Park in the database
-  Park.create(Park)
+  Park.create(park)
 
     .then((data) => {
+     
+      // carrier information
+      //create new company info
+     
+     
       res.status(200).send({
         message: 'Park information added successfully',
         data: data,
@@ -129,11 +141,38 @@ exports.findAllParksByCompany = (req, res) => {
     });
 };
 
+
+exports.findAllParksByCompany = (req, res) => {
+  const id = req.params.companyId;
+
+  Park.findAll({
+    where: { CompanyId: id },
+
+    include: {
+      model: Company,
+      attributes: ['CompanyName'],
+    },
+  })
+
+    .then((data) => {
+      res.status(200).send({
+        message: 'Success',
+        data: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving Parks.',
+      });
+    });
+};
+
 exports.findAllParksByLocation = (req, res) => {
   const givenLatitude = req.params.givenLatitude;
   const givenLongitude = req.params.givenLongitude;
+  const maxDistance = req.params.maxDistance;
   
-  const id = req.params.companyId;
+  
   Park.findAll({
     attributes: [
       "id",
@@ -169,6 +208,10 @@ exports.findAllParksByLocation = (req, res) => {
       "<=",
       maxDistance
     ),
+    include: {
+      model: Vehicle,
+      attributes: ['VehicleType','VehicleMake','VehicleColor','PicUrl','Description'],
+    },
     order: sequelize.literal("distance ASC"),
   })
     .then((result) => {

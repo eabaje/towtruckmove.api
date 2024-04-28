@@ -84,6 +84,23 @@ exports.findAll = (req, res) => {
     });
 };
 
+exports.findAllVehiclesByPark = (req, res) => {
+  const parkId = req.params.parkId;
+  Vehicle.findAll({ where: { ParkId: parkId } })
+
+    .then((data) => {
+      res.status(200).send({
+        message: 'Success',
+        data: data,
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving Vehicles.',
+      });
+    });
+};
+
 // Find a single Vehicle with an id
 exports.findOne = (req, res) => {
   const id = req.params.vehicleId;
@@ -181,6 +198,8 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+
 
 // find all insured Vehicle
 exports.findAllVehiclesInsured = (req, res) => {

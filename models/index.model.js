@@ -47,24 +47,30 @@ db.vehicletowed = require('./vehicle.towed.model.js')(sequelize, Sequelize);
 db.user = require('./user.model.js')(sequelize, Sequelize);
 db.role = require('./role.model.js')(sequelize, Sequelize);
 db.userrole = require('./user.role.model.js')(sequelize, Sequelize);
-db.shipment = require('./shipment.model.js')(sequelize, Sequelize);
-db.shipmentdetail = require('./shipment.details.model.js')(sequelize, Sequelize);
+//db.shipment = require('./shipment.model.js')(sequelize, Sequelize);
+//db.shipmentdetail = require('./shipment.details.model.js')(sequelize, Sequelize);
 db.order = require('./order.model.js')(sequelize, Sequelize);
 db.payment = require('./payment.model.js')(sequelize, Sequelize);
 db.subscribe = require('./subscription.model.js')(sequelize, Sequelize);
 db.trip = require('./trip.model.js')(sequelize, Sequelize);
 db.track = require('./track.model.js')(sequelize, Sequelize);
-db.trackshipment = require('./track.shipment.model')(sequelize, Sequelize);
+//db.trackshipment = require('./track.shipment.model')(sequelize, Sequelize);
+db.tracktowrequest = require('./track.towrequest.model')(sequelize, Sequelize);
 db.assigndriver = require('./assign.driver.model.js')(sequelize, Sequelize);
-db.assignshipment = require('./assign.shipment.model.js')(sequelize, Sequelize);
-db.assigndrivershipment = require('./assign.driver.shipment.model.js')(sequelize, Sequelize);
+//db.assignshipment = require('./assign.shipment.model.js')(sequelize, Sequelize);
+db.assigntowrequest = require('./assign.towrequest.model.js')(sequelize, Sequelize);
+
+//db.assigndrivershipment = require('./assign.driver.shipment.model.js')(sequelize, Sequelize);
+db.assigndrivertowrequest = require('./assign.driver.towrequest.model.js')(sequelize, Sequelize);
 db.usersubscription = require('./user.subscription.model.js')(sequelize, Sequelize);
 db.insurance = require('./insurance.model.js')(sequelize, Sequelize);
 db.interested = require('./shipment.interested.model.js')(sequelize, Sequelize);
+db.interestedtowrequest = require('./interested.towrequest.model.js')(sequelize, Sequelize);
 db.media = require('./media.model.js')(sequelize, Sequelize);
 db.review = require('./review.model.js')(sequelize, Sequelize);
+db.towrequest=require('./tow.request.model.js')(sequelize, Sequelize);
 
-db.assignshipment = require('./assign.shipment.model.js')(sequelize, Sequelize);
+//db.assignshipment = require('./assign.shipment.model.js')(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: 'UserRoles',
@@ -116,14 +122,13 @@ db.trip.belongsTo(db.driver, { foreignKey: 'DriverId' });
 db.company.hasMany(db.park, { foreignKey: 'CompanyId' });
 db.park.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
-db.park.hasMany(db.vehicle, { foreignKey: 'ParkId' });
-db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
+
 
 db.park.hasMany(db.vehicle, { foreignKey: 'ParkId' });
 db.vehicle.belongsTo(db.park, { foreignKey: 'ParkId' });
 
-db.park.hasMany(db.vehicletowed, { foreignKey: 'ParkId' });
-db.vehicletowed.belongsTo(db.park, { foreignKey: 'ParkId' });
+// db.park.hasMany(db.vehicletowed, { foreignKey: 'ParkId' });
+// db.vehicletowed.belongsTo(db.park, { foreignKey: 'ParkId' });
 
 db.company.hasMany(db.vehicle, { foreignKey: 'CompanyId' });
 db.vehicle.belongsTo(db.company, { foreignKey: 'CompanyId' });
@@ -133,7 +138,12 @@ db.user.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
 db.company.hasMany(db.driver, { foreignKey: 'CompanyId' });
 db.driver.belongsTo(db.company, { foreignKey: 'CompanyId' });
+
+db.park.hasMany(db.driver, { foreignKey: 'ParkId' });
+db.driver.belongsTo(db.company, { foreignKey: 'ParkId' });
+
 // db.company.hasOne(db.driver, { foreignKey:'fk_CompanyId' });
+
 
 db.subscribe.hasMany(db.usersubscription, { foreignKey: 'SubscribeId' });
 db.usersubscription.belongsTo(db.subscribe, { foreignKey: 'SubscribeId' });
@@ -141,11 +151,11 @@ db.usersubscription.belongsTo(db.subscribe, { foreignKey: 'SubscribeId' });
 db.user.hasMany(db.usersubscription, { foreignKey: 'UserId' });
 db.usersubscription.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.shipment.hasMany(db.shipmentdetail, { foreignKey: 'ShipmentId' });
-db.shipmentdetail.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.shipment.hasMany(db.shipmentdetail, { foreignKey: 'ShipmentId' });
+// db.shipmentdetail.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
-db.shipment.hasMany(db.interested, { foreignKey: 'ShipmentId' });
-db.interested.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.shipment.hasMany(db.interested, { foreignKey: 'ShipmentId' });
+// db.interested.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
 db.company.hasMany(db.interested, { foreignKey: 'CompanyId' });
 db.interested.belongsTo(db.company, { foreignKey: 'CompanyId' });
@@ -153,77 +163,109 @@ db.interested.belongsTo(db.company, { foreignKey: 'CompanyId' });
 db.driver.hasOne(db.review, { foreignKey: 'DriverId' });
 db.review.belongsTo(db.driver, { foreignKey: 'DriverId' });
 
-db.user.hasMany(db.shipment, { foreignKey: 'UserId' });
-db.shipment.belongsTo(db.user, { foreignKey: 'UserId' });
+// db.user.hasMany(db.shipment, { foreignKey: 'UserId' });
+// db.shipment.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.company.hasOne(db.assigndrivershipment, { foreignKey: 'CompanyId' });
-db.assigndrivershipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
+db.company.hasOne(db.assigndrivertowrequest, { foreignKey: 'CompanyId' });
+db.assigndrivertowrequest.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
-db.company.hasOne(db.assignshipment, { foreignKey: 'CompanyId' });
-db.assignshipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
+db.company.hasOne(db.assigntowrequest, { foreignKey: 'CompanyId' });
+db.assigntowrequest.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
-db.shipment.hasOne(db.assignshipment, { foreignKey: 'ShipmentId' });
-db.assignshipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.shipment.hasOne(db.assignshipment, { foreignKey: 'ShipmentId' });
+// db.assignshipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
-db.interested.hasOne(db.assignshipment, { foreignKey: 'ShipmentInterestId' });
-db.assignshipment.belongsTo(db.interested, { foreignKey: 'ShipmentInterestId' });
+db.towrequest.hasOne(db.assigntowrequest, { foreignKey: 'TowRequestId' });
+db.assigntowrequest.belongsTo(db.towrequest, { foreignKey: 'TowRequestId' });
 
-db.driver.hasOne(db.assigndrivershipment, { foreignKey: 'DriverId' });
-db.assigndrivershipment.belongsTo(db.driver, { foreignKey: 'DriverId' });
+// db.interested.hasOne(db.assignshipment, { foreignKey: 'ShipmentInterestId' });
+// db.assignshipment.belongsTo(db.interested, { foreignKey: 'ShipmentInterestId' });
 
-db.shipment.hasOne(db.assigndrivershipment, { foreignKey: 'ShipmentId' });
-db.assigndrivershipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+db.interestedtowrequest.hasOne(db.towrequest, { foreignKey: 'TowRequestInterestId' });
+db.towrequest.belongsTo(db.interestedtowrequest, { foreignKey: 'TowRequestInterestId' });
 
-db.user.hasOne(db.assignshipment, { foreignKey: 'UserId' });
-db.assignshipment.belongsTo(db.user, { foreignKey: 'UserId' });
+db.driver.hasOne(db.assigndrivertowrequest, { foreignKey: 'DriverId' });
+db.assigndrivertowrequest.belongsTo(db.driver, { foreignKey: 'DriverId' });
 
-db.user.hasOne(db.assigndrivershipment, { foreignKey: 'UserId' });
-db.assigndrivershipment.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.shipment.hasOne(db.trip, { foreignKey: 'ShipmentId' });
-db.trip.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
-db.shipment.hasMany(db.track, { foreignKey: 'ShipmentId' });
-db.track.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.shipment.hasOne(db.assigndrivershipment, { foreignKey: 'ShipmentId' });
+// db.assigndrivershipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
-db.shipment.hasMany(db.trackshipment, { foreignKey: 'ShipmentId' });
-db.trackshipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.user.hasOne(db.assignshipment, { foreignKey: 'UserId' });
+// db.assignshipment.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.company.hasMany(db.trackshipment, { foreignKey: 'CompanyId' });
-db.trackshipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
+db.user.hasOne(db.assigntowrequest, { foreignKey: 'UserId' });
+db.assigntowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.user.hasMany(db.trackshipment, { foreignKey: 'UserId' });
-db.trackshipment.belongsTo(db.user, { foreignKey: 'UserId' });
+db.user.hasOne(db.assigndrivertowrequest, { foreignKey: 'UserId' });
+db.assigndrivertowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.assignshipment.hasMany(db.trackshipment, { foreignKey: 'AssignShipmentId' });
-db.trackshipment.belongsTo(db.assignshipment, { foreignKey: 'AssignShipmentId' });
+// db.shipment.hasOne(db.trip, { foreignKey: 'ShipmentId' });
+// db.trip.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
 
-db.shipment.hasOne(db.assignshipment, { foreignKey: 'ShipmentId' });
-db.assignshipment.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+// db.shipment.hasMany(db.track, { foreignKey: 'ShipmentId' });
+// db.track.belongsTo(db.shipment, { foreignKey: 'ShipmentId' });
+
+db.towrequest.hasMany(db.tracktowrequest, { foreignKey: 'TowRequestId' });
+db.tracktowrequest.belongsTo(db.towrequest, { foreignKey: 'TowRequestId' });
+
+db.company.hasMany(db.tracktowrequest, { foreignKey: 'CompanyId' });
+db.tracktowrequest.belongsTo(db.company, { foreignKey: 'CompanyId' });
+
+db.user.hasMany(db.tracktowrequest, { foreignKey: 'UserId' });
+db.tracktowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
+
+db.assigntowrequest.hasMany(db.tracktowrequest, { foreignKey: 'AssignTowRequestId' });
+db.tracktowrequest.belongsTo(db.assigntowrequest, { foreignKey: 'AssignTowRequestId' });
+
+db.towrequest.hasOne(db.assigntowrequest, { foreignKey: 'TowRequestId' });
+db.assigntowrequest.belongsTo(db.towrequest, { foreignKey: 'TowRequestId' });
 
 db.user.hasMany(db.payment, { foreignKey: 'UserId' });
 db.payment.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.user.hasOne(db.assignshipment, { foreignKey: 'UserId' });
-db.assignshipment.belongsTo(db.user, { foreignKey: 'UserId' });
+db.user.hasOne(db.assigntowrequest, { foreignKey: 'UserId' });
+db.assigntowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
 
 db.user.hasOne(db.driver, { foreignKey: 'UserId' });
 db.driver.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.user.hasOne(db.interested, { foreignKey: 'UserId' });
-db.interested.belongsTo(db.user, { foreignKey: 'UserId' });
+db.user.hasOne(db.interestedtowrequest, { foreignKey: 'UserId' });
+db.interestedtowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.trip.hasMany(db.track, { foreignKey: 'TripId' });
-db.track.belongsTo(db.trip, { foreignKey: 'TripId' });
+// db.trip.hasMany(db.track, { foreignKey: 'TripId' });
+// db.track.belongsTo(db.trip, { foreignKey: 'TripId' });
+
+db.trip.hasMany(db.tracktowrequest, { foreignKey: 'TripId' });
+db.tracktowrequest.belongsTo(db.trip, { foreignKey: 'TripId' });
 
 db.user.hasMany(db.trip, { foreignKey: 'UserId' });
 db.trip.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.user.hasMany(db.track, { foreignKey: 'UserId' });
-db.track.belongsTo(db.user, { foreignKey: 'UserId' });
+// db.user.hasMany(db.track, { foreignKey: 'UserId' });
+// db.track.belongsTo(db.user, { foreignKey: 'UserId' });
 
-db.company.hasMany(db.shipment, { foreignKey: 'CompanyId' });
-db.shipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
+db.user.hasMany(db.tracktowrequest, { foreignKey: 'UserId' });
+db.tracktowrequest.belongsTo(db.user, { foreignKey: 'UserId' });
+
+db.user.hasMany(db.towrequest, { foreignKey: 'UserId' });
+db.towrequest.belongsTo(db.user, { foreignKey: 'UserId' });
+
+db.park.hasOne(db.towrequest, { foreignKey: 'ParkId' });
+db.towrequest.belongsTo(db.park, { foreignKey: 'ParkId' });
+
+db.vehicle.hasOne(db.towrequest, { foreignKey: 'VehicleId' });
+db.towrequest.belongsTo(db.vehicle, { foreignKey: 'VehicleId' });
+
+db.driver.hasOne(db.towrequest, { foreignKey: 'ParkId' });
+db.towrequest.belongsTo(db.driver, { foreignKey: 'ParkId' });
+
+// db.company.hasMany(db.shipment, { foreignKey: 'CompanyId' });
+// db.shipment.belongsTo(db.company, { foreignKey: 'CompanyId' });
+
+db.company.hasMany(db.towrequest, { foreignKey: 'CompanyId' });
+db.towrequest.belongsTo(db.company, { foreignKey: 'CompanyId' });
 
 //db.shipment.belongsTo(db.interested, {foreignKey: 'UserId'});
 

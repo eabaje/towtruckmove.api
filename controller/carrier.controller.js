@@ -45,9 +45,9 @@ exports.findAll = (req, res) => {
   // Carrier.findAll({ where: condition })
 
   Carrier.findAll({
-    // where: {
-    //   condition
-    // },
+    where: {
+      condition
+    },
     // attributes: {
     //     exclude: ['createdAt', 'updatedAt']   DairyId: req.query.dairyid
     // },

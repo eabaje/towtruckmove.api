@@ -22,7 +22,9 @@ const Role = db.role;
 const UserRole = db.userrole;
 const Company = db.company;
 const Subscribe = db.subscribe;
+const Park = db.park;
 const UserSubscription = db.usersubscription;
+
 const Op = db.Sequelize.Op;
 
 //const authware = require('../middleware/auth');
@@ -57,10 +59,10 @@ exports.signup = async (req, res) => {
     }
 
     const company = await Company.create({
-      CompanyName: req.body.CompanyName ? req.body.CompanyName : 'NA',
-      ContactEmail: req.body.ContactEmail,
-      ContactPhone: req.body.ContactPhone,
-      Address: req.body.CompanyAddress,
+      CompanyName: req.body.ParkName ? req.body.ParkName : 'NA',
+      ContactEmail: req.body.Email,
+      ContactPhone: req.body.Phone,
+      Address: req.body.Address,
       Region: req.body.Region,
       Country: req.body.Country,
       CompanyType: req.body.RoleType,
@@ -84,12 +86,12 @@ exports.signup = async (req, res) => {
       Email: req.body.Email.toLowerCase(),
       Phone: req.body.Phone,
       Address: req.body.Address,
-      City: req.body.Region,
-      Country: req.body.Country,
+      City: req.body.Region ? req.body.Region : 'NA',
+      Country: req.body.Country? req.body.Country : 'NA',
       UserName: req.body.Email.toLowerCase(),
-      AcceptTerms: req.body.AcceptTerms,
-      PaymentMethod: req.body.PaymentMethod,
-      Currency: req.body.Currency,
+    //  AcceptTerms: req.body.AcceptTerms,
+    //  PaymentMethod: req.body.PaymentMethod,
+    //  Currency: req.body.Currency,
       IsActivated: false,
       IsConfirmed: false,
       Password: encryptedPassword,
@@ -108,6 +110,36 @@ exports.signup = async (req, res) => {
 
     if (!userrole) {
       return res.status(404).send({ message: 'An error occurred with user role' });
+    }
+
+    if (req.body.RoleType==="carrier") {
+
+    
+      const park = await Park.create({
+        ParkType: req.body.ParkType,
+        ParkName: req.body.ParkName,
+        // FleetType: req.body.FleetType,
+        // FleetNumber: req.body.FleetNumber,
+        // AboutUs: req.body.AboutUs,
+        // ServiceDescription: req.body.ServiceDescription,
+       // ParkLocation:req.body.ParkLocation,
+        Address:req.body.Address,
+       // Rating: req.body.Rating,
+        Latitude:req.body.Latitude,
+        Longitude:req.body.Longitude,
+      //  Licensed: req.body.Licensed ? req.body.Licensed : false,
+        CompanyId: company.CompanyId,
+      });
+    
+      // Save Park in the database
+     
+      if (!park) {
+        return res.status(404).send({ message: 'An error occurred with park creation' });
+      }
+
+
+
+     
     }
 
     const token = jwt.sign({ UserId: user.UserId }, `${process.env.TOKEN_KEY}`, {
@@ -156,7 +188,7 @@ exports.signup = async (req, res) => {
     const url = `${process.env.BASE_URL}` + `auth/verify/${token}`;
     await mailFunc.sendEmail({
       template: 'email2',
-      subject: 'Welcome to Global Load Dispatch',
+      subject: 'Welcome to TowtruckMove-your emergency partner',
       toEmail: email,
       msg: {
         name: fullname,

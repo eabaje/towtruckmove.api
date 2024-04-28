@@ -8,3 +8,12 @@
   "basePath": "/",
   "tags": [],
   "schemes": ["https"],
+
+
+
+
+
+"@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+"@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.6",

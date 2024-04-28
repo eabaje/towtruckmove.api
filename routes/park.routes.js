@@ -15,6 +15,10 @@ module.exports = function (app) {
 
   app.get('/api/park/findAllparksLicensed', controller.findAllParksLicensed);
 
+  app.get('/api/park/findAllParksByLocation/:givenLongitude/:givenLatitude/:maxDistance', controller.findAllParksByLocation);
+
+
+
   app.get('/api/park/findAllparksByDate/:startDate/:endDate', controller.findAllParksByDate);
 
   app.post('/api/park/create', controller.create);
